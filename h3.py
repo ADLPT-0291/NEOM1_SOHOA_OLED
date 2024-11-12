@@ -279,7 +279,7 @@ def has_ipv4_address(interface):
         else:
             return False
     except Exception as e:
-        print(f"loi kiem tra mang Eth0:" + str(e))
+        print("loi kiem tra mang Eth0:" + str(e))
         return False
 
 class VLC:
@@ -373,14 +373,14 @@ def get_network_strength(ser):
                 # Chuyển đổi RSSI sang mức mạng
             except (IndexError, ValueError) as e:
                 # Bắt các lỗi liên quan đến việc xử lý chuỗi và chuyển đổi kiểu dữ liệu
-                print(f"Error processing RSSI value:" + str(e))
+                print("Error processing RSSI value:" + str(e))
                 return None
         else:
             # Trả về None nếu không thể lấy được RSSI
             return None
     except Exception as e:
         # Bắt và xử lý các lỗi chung
-        print(f"An error occurred:" + str(e))
+        print("An error occurred:" + str(e))
         return None
 
 
@@ -527,13 +527,13 @@ def get_network_operator(ser):
                 return operator_info
             except (IndexError, ValueError) as e:
                 # Bắt các lỗi liên quan đến việc xử lý chuỗi
-                print(f"Error processing operator info:" + str(e))
+                print("Error processing operator info:" + str(e))
                 return "Unknown"
         else:
             return "Unknown"
     except Exception as e:
         # Bắt và xử lý các lỗi chung
-        print(f"An error occurred:" + str(e))
+        print("An error occurred:" + str(e))
         return "Unknown"
 
     
@@ -578,7 +578,7 @@ def job_GuiApiPhatLaiLichPhatKhanCap(LichPhat):
         else:
             DungBanTin()  
     except Exception as e:
-            print(f'Loi Gui lich Phat lai Lich phat:' + str(e))
+            print('Loi Gui lich Phat lai Lich phat:' + str(e))
 
 # dừng bản tin nội bộ
 def job_DungBanTinNoiBo(LichPhat):
@@ -765,7 +765,7 @@ def job_PhatBanTinNoiBo(Ban_Tin, LichPhat):
             if trangthaiguiApi == True:
                 api_nhatkybantinTinh(dataPingTinh)            
     except Exception as e:
-            print(f'loi chay job phat ban tin noi bo theo lich "job_PhatBanTinNoiBo":' + str(e))
+            print('loi chay job phat ban tin noi bo theo lich "job_PhatBanTinNoiBo":' + str(e))
        
 # hàm xóa Job
 def delete_job():
@@ -990,7 +990,7 @@ def kiem_tra_lich_phat_dang_phat(LichPhat, NguonPhats):
                                 scheduler.add_job(job_PhatBanTinNoiBo, 'date', run_date=bat_dau_so_sanh, args=[item, LichPhat], id=job_id)            
                                                   
         except Exception as e:
-            print(f'loi kiem tra phat ban tin noi bo:' + str(e))
+            print('loi kiem tra phat ban tin noi bo:' + str(e))
     # LichPhatDangNhan có giá trị khác {}                
 ######### get dia chi ip ###################
 def get_ip_address():
@@ -1002,7 +1002,7 @@ def get_ip_address():
         s.close()
         return ip_address
     except Exception as e:
-        print(f"An error occurred:" + str(e))
+        print("An error occurred:" + str(e))
         return "0.0.0.0"
   
 def control_led_status(value):
@@ -1049,7 +1049,7 @@ def DungBanTin():
         time.sleep(1)
         #pingServer()
     except Exception as e:
-        print(f'Loi Stop ban tin:' + str(e))
+        print('Loi Stop ban tin:' + str(e))
 
 # phát bản tin
 def PhatBanTin(data):
@@ -1128,7 +1128,7 @@ def PhatBanTin(data):
                 LogBanTin()
                 #pingServer()
     except Exception as e:
-        print(f'Loi Phat ban tin:' + str(e))
+        print('Loi Phat ban tin:' + str(e))
 
 # phát bản tin tiếp tục
 def PhatBanTin_TiepTuc(data):
@@ -1163,7 +1163,7 @@ def PhatBanTin_TiepTuc(data):
         LogBanTin()
         pingServer()
     except Exception as e:
-        print(f'Loi Phat ban tin:' + str(e))
+        print('Loi Phat ban tin:' + str(e))
 
 def KiemTraPhim():
     global demnhanphim
@@ -1206,7 +1206,7 @@ def LogBanTin():
         }
         responsePingtest = requests.post(domainLogbantin, json = dataLog, timeout=5)
     except Exception as e:
-          print(f'Loi gui log ban tin:' + str(e))
+          print('Loi gui log ban tin:' + str(e))
 
 # Call API xác nhận kết nối
 def api_xacnhanketnoi(data):
@@ -1255,7 +1255,7 @@ def api_xacnhanketnoi(data):
                 pingApiTinh.stop()
         
     except Exception as e:
-        print(f'loi xac nhan ket noi:' + str(e))
+        print('loi xac nhan ket noi:' + str(e))
   # get_speedtest()
 
 # Call API gửi log bản tin về tỉnh
@@ -1476,7 +1476,7 @@ def pingTinh():
         #   client.publish('testdata',json_data)
         #   client.publish('testdata',json_dataBody)
       except Exception as e:    
-        print(f'loi call api ping tinh:' + str(e))
+        print('loi call api ping tinh:' + str(e))
       
        
 
@@ -1558,7 +1558,7 @@ def pingServer():
             os.system("(sudo systemctl restart myapp.service)")
         # if not run_main:
         #   nhapnhatLedConnectCallApiloi.stop()
-        print(f'loi ping 20s ve server:' + str(e))
+        print('loi ping 20s ve server:' + str(e))
 
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
@@ -1717,7 +1717,7 @@ def playBantinTinh(data, status):
     LogBanTin()
     #pingServer()
   except Exception as e:
-    print(f"Loi phat ban tin tinh:" + str(e))
+    print("Loi phat ban tin tinh:" + str(e))
 
 def playBantinTinh2(data):
   global ThoiDiemKetThuc,  ThoiDiemBatDau,  NoiDungPhat, phatbantintinh, TrangThaiHoatDong, Video, kiemtraPlay, demKiemtra, trangthaiplay, led_status, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao
@@ -1816,7 +1816,7 @@ def playBantinTinh2(data):
    
     responsePingtest = requests.post(domainPing, json = dataPing, timeout=5)
   except Exception as e:
-    print(f"loi ping ban tin dang phat play ve server:" + str(e))
+    print("loi ping ban tin dang phat play ve server:" + str(e))
 
 #################### ham stop ban tin tinh ##############################
 def stopBanTinTinh():
@@ -2045,7 +2045,7 @@ def on_message(client, userdata, msg):
           amluong = int(data['volume']) 
           VLC_instance.Set_Volume(data['volume'])
        except Exception as e:
-        print(f'Loi set am luong:' + str(e))
+        print('Loi set am luong:' + str(e))
        
     #### play ban tin  ####
     if topic == dieukhienplay: 
@@ -2080,7 +2080,7 @@ def on_message(client, userdata, msg):
                 nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
                 kiem_tra_lich_phat_dang_phat(data['LichPhat'],nguonphat)
       except Exception as e:
-          print(f"Loi nhận MQTT:" + str(e))
+          print("Loi nhận MQTT:" + str(e))
     ### gui log ban tin ve tinh ####
     if topic == yeucauguidulieu:
       try:
@@ -2106,7 +2106,7 @@ def on_message(client, userdata, msg):
                 for job in jobs:
                     if job.id not in ["check_lich_phat_tinh", "check_lich_dung_tinh"]:
                         scheduler.remove_job(job.id)
-                        print(f"Removed job ID:" + str(job.id))
+                        print("Removed job ID:" + str(job.id))
               
                 kiem_tra_thoi_gian_bat_dau() 
                
@@ -2234,7 +2234,7 @@ def on_message(client, userdata, msg):
                  
             
       except Exception as e:
-        print(f'loi nhan lenh MQTT:' + str(e))
+        print('loi nhan lenh MQTT:' + str(e))
 ###########################################################
 
 CLEAN_SESSION=False
