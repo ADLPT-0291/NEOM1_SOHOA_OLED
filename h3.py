@@ -430,7 +430,7 @@ def rssi_to_dbm(rssi):
     elif 100 <= rssi <= 199:
         return "Extended to be used in TDSCDMA indicating received signal code power (RSCP)"
     else:
-        return f"{rssi} (Invalid RSSI code)"
+        return "(Invalid RSSI code)"
 
 def display_signal_2g_3g(rssi):
     # Chuyển đổi giá trị RSSI sang dBm
