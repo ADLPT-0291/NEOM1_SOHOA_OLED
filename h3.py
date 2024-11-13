@@ -1647,9 +1647,10 @@ def playMPC(data, status, ThoiDiemBatDau, ThoiDiemKetThuc):
       thoi_gian_phat_gio = thoi_gian_da_phat // 3600
       thoi_gian_phat_phut = (thoi_gian_da_phat % 3600) // 60
       thoi_gian_phat_giay = (thoi_gian_da_phat % 3600) % 60
-      thoi_gian_phat_gio = f'{thoi_gian_phat_gio:02}'  # Thêm số 0 nếu nhỏ hơn 10
-      thoi_gian_phat_phut = f'{thoi_gian_phat_phut:02}'  # Thêm số 0 nếu nhỏ hơn 10
-      thoi_gian_phat_giay = f'{thoi_gian_phat_giay:02}'
+      thoi_gian_phat_gio = "{:02}".format(thoi_gian_phat_gio)  # Thêm số 0 nếu nhỏ hơn 10
+      thoi_gian_phat_phut = "{:02}".format(thoi_gian_phat_phut)  # Thêm số 0 nếu nhỏ hơn 10
+      thoi_gian_phat_giay = "{:02}".format(thoi_gian_phat_giay)  # Thêm số 0 nếu nhỏ hơn 10
+
       os.system("sudo mpc clear")
       os.system("sudo mpc add '" + data + "'")
       os.system("sudo mpc play")  
