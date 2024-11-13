@@ -908,7 +908,7 @@ def kiem_tra_thoi_gian_ket_thuc():
     ngay = now.strftime("%d")
     thang = now.strftime("%m")
     nam = now.strftime("%Y")
-    ngay_tim = f"{ngay}-{thang}-{nam}"
+    ngay_tim = "{}-{}-{}".format(ngay, thang, nam)
     # Đọc dữ liệu từ file lichphatTinh.json
     with open('lichphatTinh.json', 'r') as file:
         data = json.load(file)
