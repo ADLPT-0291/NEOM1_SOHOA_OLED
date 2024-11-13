@@ -848,8 +848,9 @@ def kiem_tra_thoi_gian_bat_dau():
     ngay = now.strftime("%d")
     thang = now.strftime("%m")
     nam = now.strftime("%Y")
-    gio_tim = f"{gio}:{phut}"
-    ngay_tim = f"{ngay}-{thang}-{nam}"
+    gio_tim = "{}:{}".format(gio, phut)
+    ngay_tim = "{}-{}-{}".format(ngay, thang, nam)
+
  
     # Đọc dữ liệu từ file lichphatTinh.json
     with open('lichphatTinh.json', 'r') as file:
