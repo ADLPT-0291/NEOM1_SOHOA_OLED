@@ -438,25 +438,25 @@ def display_signal_2g_3g(rssi):
     if isinstance(dbm, int) or isinstance(dbm, float):
         if dbm >= -70:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 4
             }
             return data
         elif -70 > dbm >= -85:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 3
             }
             return data
         elif -85 > dbm >= -100:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 2
             }
             return data
         elif dbm < -100:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 1
             }
             return data
@@ -474,25 +474,25 @@ def display_signal_lte(rssi):
     if isinstance(dbm, int) or isinstance(dbm, float):
         if dbm > -65:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 4
             }
             return data
         elif -65 >= dbm > -75:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 3
             }
             return data
         elif -75 >= dbm > -85:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 2
             }
             return data
         elif -85 >= dbm > -95:
             data = {
-               'dbm': f"{dbm}dBm",
+               'dbm': dbm + "dBm",
                'signal': 1
             }
             return data
