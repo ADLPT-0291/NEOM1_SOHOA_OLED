@@ -355,7 +355,7 @@ def get_wifi_list():
     wifi_list = []
     lines = output.splitlines()
     # Gọi hàm và in kết quả dưới dạng JSON
-    wifi_list = parse_wifi_list(lines)
+    wifi_list = parse_wifi_list(output)
     print(json.dumps(wifi_list, indent=2))
   
     # Bỏ qua dòng tiêu đề (dòng đầu tiên)
