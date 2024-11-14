@@ -2044,12 +2044,8 @@ def on_connect(client, userdata, flags, rc):
        # ip = requests.get('https://api.ipify.org').text
         eth_connected = has_ipv4_address("eth0")
         wifi_connected = has_ipv4_address("wlan0")
-        if eth_connected:
-            print("Kết nối qua Ethernet (eth0)")
-        elif wifi_connected:
-            print("Kết nối qua Wi-Fi (wlan0)")
-        else:
-            print("Không có kết nối mạng qua eth0 hoặc wlan0")
+        print(f"eth0 connected: {eth_connected}")
+        print(f"wlan0 connected: {wifi_connected}")
         ketnoimang = has_ipv4_address('eth0')      
         if ketnoimang == True:
             TrangThaiKetNoi = 'Ethernet'
