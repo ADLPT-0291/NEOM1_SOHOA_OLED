@@ -304,7 +304,45 @@ def signal_to_bars(signal_strength):
     # Nếu tín hiệu rất mạnh
     else:
         return 5
+
+def parse_wifi_list(wifi_output):
+    # Tách từng dòng trong kết quả
+    lines = wifi_output.strip().split("\n")
     
+    # Lấy các chỉ số vị trí của các cột trong tiêu đề để chia trường hợp
+    headers = lines[0].split()
+    indices = {
+        "IN-USE": lines[0].find("IN-USE"),
+        "BSSID": lines[0].find("BSSID"),
+        "SSID": lines[0].find("SSID"),
+        "MODE": lines[0].find("MODE"),
+        "CHAN": lines[0].find("CHAN"),
+        "RATE": lines[0].find("RATE"),
+        "SIGNAL": lines[0].find("SIGNAL"),
+        "BARS": lines[0].find("BARS"),
+        "SECURITY": lines[0].find("SECURITY"),
+    }
+    
+    # Khởi tạo danh sách Wi-Fi
+    wifi_list = []
+
+    # Bỏ qua dòng tiêu đề
+    for line in lines[1:]:
+        wifi = {
+            "IN-USE": line[indices["IN-USE"]:indices["BSSID"]].strip(),
+            "BSSID": line[indices["BSSID"]:indices["SSID"]].strip(),
+            "SSID": line[indices["SSID"]:indices["MODE"]].strip(),
+            "MODE": line[indices["MODE"]:indices["CHAN"]].strip(),
+            "CHAN": line[indices["CHAN"]:indices["RATE"]].strip(),
+            "RATE": line[indices["RATE"]:indices["SIGNAL"]].strip(),
+            "SIGNAL": line[indices["SIGNAL"]:indices["BARS"]].strip(),
+            "BARS": line[indices["BARS"]:indices["SECURITY"]].strip(),
+            "SECURITY": line[indices["SECURITY"]:].strip(),
+        }
+        wifi_list.append(wifi)
+
+    return wifi_list
+
 # Quét danh sách wifi hiện có trong khu vực
 def get_wifi_list():
     # Chạy lệnh nmcli dev wifi
@@ -316,7 +354,10 @@ def get_wifi_list():
     # Tách kết quả thành các dòng
     wifi_list = []
     lines = output.splitlines()
-    print(lines)
+    # Gọi hàm và in kết quả dưới dạng JSON
+    wifi_list = parse_wifi_list(lines)
+    print(json.dumps(wifi_list, indent=2))
+  
     # Bỏ qua dòng tiêu đề (dòng đầu tiên)
     for line in lines[1:]:
         # Tách dòng thành các phần từ
