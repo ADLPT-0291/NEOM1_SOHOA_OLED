@@ -316,7 +316,7 @@ def get_wifi_list():
     # Tách kết quả thành các dòng
     wifi_list = []
     lines = output.splitlines()
-
+    print(lines)
     # Bỏ qua dòng tiêu đề (dòng đầu tiên)
     for line in lines[1:]:
         # Tách dòng thành các phần từ
