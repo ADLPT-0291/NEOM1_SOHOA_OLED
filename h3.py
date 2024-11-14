@@ -309,39 +309,29 @@ def parse_wifi_list(wifi_output):
     # Tách từng dòng trong kết quả
     lines = wifi_output.strip().split("\n")
     
-    # Lấy các chỉ số vị trí của các cột trong tiêu đề để chia trường hợp
-    headers = lines[0].split()
-    indices = {
-        "IN-USE": lines[0].find("IN-USE"),
-        "BSSID": lines[0].find("BSSID"),
-        "SSID": lines[0].find("SSID"),
-        "MODE": lines[0].find("MODE"),
-        "CHAN": lines[0].find("CHAN"),
-        "RATE": lines[0].find("RATE"),
-        "SIGNAL": lines[0].find("SIGNAL"),
-        "BARS": lines[0].find("BARS"),
-        "SECURITY": lines[0].find("SECURITY"),
-    }
-    
-    # Khởi tạo danh sách Wi-Fi
+    # Bỏ qua dòng tiêu đề
     wifi_list = []
 
-    # Bỏ qua dòng tiêu đề
     for line in lines[1:]:
-        wifi = {
-            "IN-USE": line[indices["IN-USE"]:indices["BSSID"]].strip(),
-            "BSSID": line[indices["BSSID"]:indices["SSID"]].strip(),
-            "SSID": line[indices["SSID"]:indices["MODE"]].strip(),
-            "MODE": line[indices["MODE"]:indices["CHAN"]].strip(),
-            "CHAN": line[indices["CHAN"]:indices["RATE"]].strip(),
-            "RATE": line[indices["RATE"]:indices["SIGNAL"]].strip(),
-            "SIGNAL": line[indices["SIGNAL"]:indices["BARS"]].strip(),
-            "BARS": line[indices["BARS"]:indices["SECURITY"]].strip(),
-            "SECURITY": line[indices["SECURITY"]:].strip(),
-        }
-        wifi_list.append(wifi)
-
+        # Sử dụng regex để phân tích từng trường dựa trên khoảng trống
+        match = re.match(r'(\*?)\s+([\w:]+)\s+(.+?)\s+(Infra|Ad-Hoc)\s+(\d+)\s+([\d\s]+Mbit/s)\s+(\d+)\s+([▂▄▆█_]+)\s+(\S+)', line)
+        
+        if match:
+            wifi = {
+                "IN-USE": match.group(1).strip(),
+                "BSSID": match.group(2).strip(),
+                "SSID": match.group(3).strip(),
+                "MODE": match.group(4).strip(),
+                "CHAN": match.group(5).strip(),
+                "RATE": match.group(6).strip(),
+                "SIGNAL": int(match.group(7).strip()),  # Chuyển đổi SIGNAL thành số nguyên
+                "BARS": match.group(8).strip(),
+                "SECURITY": match.group(9).strip(),
+            }
+            wifi_list.append(wifi)
+    
     return wifi_list
+
 
 # Quét danh sách wifi hiện có trong khu vực
 def get_wifi_list():
