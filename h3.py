@@ -282,23 +282,46 @@ def has_ipv4_address(interface):
         print("loi kiem tra mang Eth0:" + str(e))
         return False
 
+# Tính mức tín hiệu wifi
+def signal_to_bars(signal_strength):
+    """
+    Chuyển đổi giá trị SIGNAL (dBm) thành mức vạch Wi-Fi (1-4) theo mức tín hiệu phổ biến.
+    """
+    signal_strength = int(signal_strength)
+
+    # Phân loại mức tín hiệu Wi-Fi theo dBm:
+    if signal_strength >= -50:
+        return 4  # Mức tín hiệu rất mạnh
+    elif signal_strength >= -70:
+        return 3  # Mức tín hiệu mạnh
+    elif signal_strength >= -85:
+        return 2  # Mức tín hiệu yếu
+    else:
+        return 1  # Mức tín hiệu rất yếu
+    
 # Quét danh sách wifi hiện có trong khu vực
 def get_wifi_list():
-    # Chạy lệnh nmcli dev wifi
+    # Chạy lệnh nmcli dev wifi để quét các Wi-Fi xung quanh
     result = subprocess.run(["nmcli", "dev", "wifi"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     # Lấy kết quả đầu ra của lệnh
     output = result.stdout.decode()
 
-    # Tách kết quả để lấy tên Wi-Fi
+    # Tách kết quả thành các dòng
     wifi_list = []
-    for line in output.splitlines():
-        # Bỏ qua các dòng không chứa mạng Wi-Fi, ví dụ: dòng tiêu đề
-        if line and not line.startswith("IN-USE"):
-            # Mỗi dòng có các trường thông tin, tách ra để lấy tên Wi-Fi
-            parts = line.split()
-            if len(parts) > 0:
-                wifi_list.append(parts[0])  # Tên Wi-Fi là phần đầu tiên trong dòng
+    lines = output.splitlines()
+
+    # Bỏ qua dòng tiêu đề (dòng đầu tiên)
+    for line in lines[1:]:
+        # Tách dòng thành các phần từ
+        parts = line.split()
+        
+        # Kiểm tra xem dòng có đủ thông tin không
+        if len(parts) >= 7:
+            ssid = parts[1]  # SSID của mạng Wi-Fi
+            signal = parts[6]  # Signal Strength (dBm) của mạng, phần thứ 6 trong dòng
+            bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
+            wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal, "Bars": bars})
 
     return wifi_list
 
