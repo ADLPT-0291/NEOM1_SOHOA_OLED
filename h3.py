@@ -301,7 +301,7 @@ def signal_to_bars(signal_strength):
     
 # Quét danh sách wifi hiện có trong khu vực
 def get_wifi_list():
-    # Chạy lệnh nmcli dev wifi để quét các Wi-Fi xung quanh
+    # Chạy lệnh nmcli dev wifi
     result = subprocess.run(["nmcli", "dev", "wifi"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     
     # Lấy kết quả đầu ra của lệnh
@@ -316,20 +316,11 @@ def get_wifi_list():
         # Tách dòng thành các phần từ
         parts = line.split()
         
-        # Kiểm tra xem dòng có đủ thông tin không và tránh trường hợp chứa "Mbit/s"
+        # Kiểm tra xem dòng có đủ thông tin không
         if len(parts) >= 7:
-            ssid = parts[1]  # SSID của mạng Wi-Fi
+            ssid = parts[1]  # SSID của mạng
             signal = parts[6]  # Signal Strength (dBm) của mạng, phần thứ 6 trong dòng
-            
-            # Loại bỏ các đơn vị như "Mbit/s" nếu có
-            signal = signal.replace('Mbit/s', '').strip()
-
-            try:
-                bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
-                wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal, "Bars": bars})
-            except ValueError:
-                # Trường hợp không thể chuyển SIGNAL thành số (ví dụ: nó không phải là số hợp lệ)
-                continue
+            wifi_list.append({"SSID": ssid, "Signal Strength": signal})
 
     return wifi_list
 
