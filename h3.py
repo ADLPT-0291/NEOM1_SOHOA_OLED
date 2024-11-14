@@ -320,7 +320,8 @@ def get_wifi_list():
         if len(parts) >= 7:
             ssid = parts[2]  # SSID của mạng
             signal = parts[6]  # Signal Strength (dBm) của mạng, phần thứ 6 trong dòng
-            wifi_list.append({"SSID": ssid, "Signal Strength": signal})
+            bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
+            wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal, "Bars": bars})
 
     return wifi_list
 
