@@ -282,6 +282,27 @@ def has_ipv4_address(interface):
         print("loi kiem tra mang Eth0:" + str(e))
         return False
 
+# Quét danh sách wifi hiện có trong khu vực
+def get_wifi_list():
+    # Chạy lệnh nmcli dev wifi
+    result = subprocess.run(["nmcli", "dev", "wifi"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    
+    # Lấy kết quả đầu ra của lệnh
+    output = result.stdout.decode()
+
+    # Tách kết quả để lấy tên Wi-Fi
+    wifi_list = []
+    for line in output.splitlines():
+        # Bỏ qua các dòng không chứa mạng Wi-Fi, ví dụ: dòng tiêu đề
+        if line and not line.startswith("IN-USE"):
+            # Mỗi dòng có các trường thông tin, tách ra để lấy tên Wi-Fi
+            parts = line.split()
+            if len(parts) > 0:
+                wifi_list.append(parts[0])  # Tên Wi-Fi là phần đầu tiên trong dòng
+
+    return wifi_list
+
+# Lấy danh sách các Wi-Fi có sẵn
 class VLC:
     def __init__(self):
       self.TrangThaiHoatDong = TrangThaiHoatDong
@@ -1488,7 +1509,9 @@ def pingServer():
     if(loiketnoi == 10):       
         os.system("(sudo systemctl restart myapp.service)")
     try:
-      
+        # Lấy danh sách các Wi-Fi có sẵn
+        wifi_list = get_wifi_list()
+        print("Danh sách Wi-Fi:", wifi_list)
         # print('///----------------------------------------------////')
         # for job in scheduler.get_jobs():           
         #     print(f"Job ID: {job.id}, Next Run Time: {job.next_run_time}")
