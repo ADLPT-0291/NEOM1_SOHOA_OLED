@@ -315,7 +315,8 @@ def parse_wifi_list(wifi_output):
     for line in lines[1:]:
         # Sử dụng regex để phân tích từng trường dựa trên khoảng trống
         match = re.match(r'(\*?)\s+([\w:]+)\s+(.+?)\s+(Infra|Ad-Hoc)\s+(\d+)\s+([\d\s]+Mbit/s)\s+(\d+)\s+([▂▄▆█_]+)\s+(\S+)', line)
-        
+        signal = int(match.group(7).strip())
+        bars = signal_to_bars(signal)
         if match:
             wifi = {
                 "IN-USE": match.group(1).strip(),
@@ -325,7 +326,7 @@ def parse_wifi_list(wifi_output):
                 "CHAN": match.group(5).strip(),
                 "RATE": match.group(6).strip(),
                 "SIGNAL": int(match.group(7).strip()),  # Chuyển đổi SIGNAL thành số nguyên
-                "BARS": match.group(8).strip(),
+                "BARS": bars,
                 "SECURITY": match.group(9).strip(),
             }
             wifi_list.append(wifi)
