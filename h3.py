@@ -283,18 +283,23 @@ def has_ipv4_address(interface):
         return False
 
 # Tính mức tín hiệu wifi
-def signal_to_bars(signal):
-     # Nếu tín hiệu rất yếu, không có vạch
-    if signal <= -80:
+def signal_to_bars(signal_strength):
+    """
+    Chuyển đổi giá trị SIGNAL (dBm) thành mức vạch Wi-Fi (1-4) theo mức tín hiệu phổ biến.
+    """
+    signal_strength = int(signal_strength)
+
+    # Nếu tín hiệu rất yếu, không có vạch
+    if signal_strength <= -80:
         return 1
     # Nếu tín hiệu yếu
-    elif signal <= -70:
+    elif signal_strength <= -70:
         return 2
     # Nếu tín hiệu vừa phải
-    elif signal <= -60:
+    elif signal_strength <= -60:
         return 3
     # Nếu tín hiệu mạnh
-    elif signal <= -50:
+    elif signal_strength <= -50:
         return 4
     # Nếu tín hiệu rất mạnh
     else:
