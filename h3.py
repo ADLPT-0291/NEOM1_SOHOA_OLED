@@ -273,13 +273,15 @@ class VLCPlayer:
 # kiểm tra loại kết nối mạng
 def has_ipv4_address(interface):
     try:
-        output = subprocess.check_output("ifconfig eth0", shell=True, universal_newlines=True)
+        # Thay thế eth0 bằng tên giao diện mạng truyền vào (interface)
+        output = subprocess.check_output(f"ifconfig {interface}", shell=True, universal_newlines=True)
+        # Kiểm tra xem có 'inet ' trong output không (địa chỉ IPv4 bắt đầu bằng 'inet')
         if "inet " in output:
             return True
         else:
             return False
     except Exception as e:
-        print("loi kiem tra mang Eth0:" + str(e))
+        print(f"Lỗi kiểm tra mạng {interface}: " + str(e))
         return False
 
 # Tính mức tín hiệu wifi
@@ -338,19 +340,6 @@ def get_wifi_list():
     # Gọi hàm và in kết quả dưới dạng JSON
     wifi_list = parse_wifi_list(output)
     print(json.dumps(wifi_list, indent=2))
-  
-    # Bỏ qua dòng tiêu đề (dòng đầu tiên)
-    for line in lines[1:]:
-        # Tách dòng thành các phần từ
-        parts = line.split()
-        
-        # Kiểm tra xem dòng có đủ thông tin không
-        if len(parts) >= 7:
-            ssid = parts[2]  # SSID của mạng
-            signal = parts[7]  # Signal Strength (dBm) của mạng, phần thứ 6 trong dòng
-            #bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
-            wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal,})
-
     return wifi_list
 
 # Lấy danh sách các Wi-Fi có sẵn
@@ -2053,6 +2042,14 @@ def on_connect(client, userdata, flags, rc):
         control_led_connect(1)
         """ call API xac nhan ket noi """
        # ip = requests.get('https://api.ipify.org').text
+        eth_connected = has_ipv4_address("eth0")
+        wifi_connected = has_ipv4_address("wlan0")
+        if eth_connected:
+            print("Kết nối qua Ethernet (eth0)")
+        elif wifi_connected:
+            print("Kết nối qua Wi-Fi (wlan0)")
+        else:
+            print("Không có kết nối mạng qua eth0 hoặc wlan0")
         ketnoimang = has_ipv4_address('eth0')      
         if ketnoimang == True:
             TrangThaiKetNoi = 'Ethernet'
