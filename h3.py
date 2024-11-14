@@ -316,12 +316,20 @@ def get_wifi_list():
         # Tách dòng thành các phần từ
         parts = line.split()
         
-        # Kiểm tra xem dòng có đủ thông tin không
+        # Kiểm tra xem dòng có đủ thông tin không và tránh trường hợp chứa "Mbit/s"
         if len(parts) >= 7:
             ssid = parts[1]  # SSID của mạng Wi-Fi
             signal = parts[6]  # Signal Strength (dBm) của mạng, phần thứ 6 trong dòng
-            bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
-            wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal, "Bars": bars})
+            
+            # Loại bỏ các đơn vị như "Mbit/s" nếu có
+            signal = signal.replace('Mbit/s', '').strip()
+
+            try:
+                bars = signal_to_bars(signal)  # Tính mức vạch từ SIGNAL
+                wifi_list.append({"SSID": ssid, "Signal Strength (dBm)": signal, "Bars": bars})
+            except ValueError:
+                # Trường hợp không thể chuyển SIGNAL thành số (ví dụ: nó không phải là số hợp lệ)
+                continue
 
     return wifi_list
 
