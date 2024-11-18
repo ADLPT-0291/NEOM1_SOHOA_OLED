@@ -64,6 +64,7 @@ dieukhienplay = khaibao.dieukhienplay
 yeucauguidulieu = khaibao.yeucauguidulieu
 reset = khaibao.reset
 
+
 ####################################
 MainBoard = 'M1_2024_V8.2'
 phienban = "V2.3.0"
@@ -2347,13 +2348,15 @@ scheduler.add_job(kiem_tra_thoi_gian_bat_dau, 'cron', minute='*/1', id="check_li
 scheduler.add_job(kiem_tra_thoi_gian_ket_thuc, 'cron', minute='*/1', id="check_lich_dung_tinh")
 scheduler.start()
 ser = serial.Serial('/dev/ttyS1', 115200, timeout=1)
-# try:
-#     nguonphat = lap_qua_nguon_phat(datatest['GioBatDau'], datatest['DanhSachNguonPhat'])
-#     LichPhatDangNhan = datatest
-#     kiem_tra_lich_phat_dang_phat(datatest,nguonphat)
-    
-# except Exception as e:
-#     print(f"Loi chay thu: {e}")
+# kết nối wifi
+# Đọc file JSON
+with open('wifiConfig.json', 'r', encoding='utf-8') as file:
+    data = json.load(file)
+    # Truy cập các trường trong file JSON
+    ssid = data.get("ssid")    # Lấy trường 'ssid'
+    password = data.get("password")    # Lấy trường 'password'
+    print(ssid)
+    print(password)
 
 while run_flag:
     while not client.connected_flag and client.retry_count<3:
