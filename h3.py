@@ -2350,11 +2350,12 @@ scheduler.start()
 ser = serial.Serial('/dev/ttyS1', 115200, timeout=1)
 # kết nối wifi
 # Đọc file JSON
+
 with open('wifiConfig.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
     # Truy cập các trường trong file JSON
-    ssid = data.get("ssid")    # Lấy trường 'ssid'
-    password = data.get("password")    # Lấy trường 'password'
+    ssid = data['ssid']    # Lấy trường 'ssid'
+    password = data['password']    # Lấy trường 'password'
     print(ssid)
     print(password)
 
