@@ -2317,8 +2317,35 @@ def validate_json_Wifi(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
-            print("File JSON hợp lệ")
-            return data
+             # Ví dụ truy cập các trường
+            # Lấy SSID và PASSWORD từ file JSON
+            ssid = data.get('ssid', '').strip()
+            password = data.get('password', '').strip()
+            # Kiểm tra SSID và PASSWORD có rỗng không
+            if not ssid:
+                print("SSID không được để trống.")
+                return
+            if not password:
+                print("Password không được để trống.")
+                return
+            print(f"Kết nối tới Wi-Fi: {ssid}")
+             # Thực hiện kết nối Wi-Fi
+            # Đưa SSID và password vào dấu ngoặc kép để xử lý khoảng cách
+            ssid_quoted = f'"{ssid}"'
+            password_quoted = f'"{password}"'
+            # Thực hiện kết nối Wi-Fi
+            try:
+                result = subprocess.run(
+                    ['nmcli', 'dev', 'wifi', 'connect', ssid_quoted, 'password', password_quoted, 'ifname', 'wlan0'],
+                    check=True,
+                    text=True,
+                    capture_output=True,
+                    shell=True  # Cần shell=True để xử lý các chuỗi có dấu ngoặc kép
+                )
+                print("Kết nối thành công:", result.stdout)
+            except subprocess.CalledProcessError as e:
+                print("Không thể kết nối Wi-Fi. Lỗi:", e.stderr)
+
     except json.JSONDecodeError as e:
         print("File JSON không hợp lệ:", e)
         return None
@@ -2367,14 +2394,9 @@ ser = serial.Serial('/dev/ttyS1', 115200, timeout=1)
 # Đọc file JSON
 
 file_path = 'wifiConfig.json'
-data_wifi = validate_json_Wifi(file_path)
-if data_wifi:
-    print("Dữ liệu trong file JSON:", data_wifi)
-    # Ví dụ truy cập các trường
-    ssid = data_wifi.get('ssid', 'Không có trường ssid')
-    password = data_wifi.get('password', 'Không có trường password')
-    print("SSID:", ssid)
-    print("Password:", password)
+# kết nối wifi
+validate_json_Wifi(file_path)
+
 
 while run_flag:
     while not client.connected_flag and client.retry_count<3:
