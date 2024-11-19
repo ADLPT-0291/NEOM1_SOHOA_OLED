@@ -340,7 +340,6 @@ def get_wifi_list():
     lines = output.splitlines()
     # Gọi hàm và in kết quả dưới dạng JSON
     wifi_list = parse_wifi_list(output)
-    print(json.dumps(wifi_list, indent=2))
     return wifi_list
 
 # Lấy danh sách các Wi-Fi có sẵn
@@ -1551,8 +1550,8 @@ def pingServer():
         os.system("(sudo systemctl restart myapp.service)")
     try:
         # Lấy danh sách các Wi-Fi có sẵn
-        wifi_list = get_wifi_list()
-        print("Danh sách Wi-Fi:", wifi_list)
+        #wifi_list = get_wifi_list()
+        #print("Danh sách Wi-Fi:", wifi_list)
         # print('///----------------------------------------------////')
         # for job in scheduler.get_jobs():           
         #     print(f"Job ID: {job.id}, Next Run Time: {job.next_run_time}")
@@ -2395,7 +2394,7 @@ ser = serial.Serial('/dev/ttyS1', 115200, timeout=1)
 
 file_path = 'wifiConfig.json'
 # kết nối wifi
-validate_json_Wifi(file_path)
+#validate_json_Wifi(file_path)
 
 
 while run_flag:
