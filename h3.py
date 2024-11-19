@@ -2308,6 +2308,21 @@ def on_message(client, userdata, msg):
         print('loi nhan lenh MQTT:' + str(e))
 ###########################################################
 
+def validate_json_Wifi(file_path):
+    """
+    Hàm kiểm tra tính hợp lệ của một file JSON.
+    :param file_path: Đường dẫn tới file JSON cần kiểm tra.
+    :return: Trả về dữ liệu JSON nếu hợp lệ, None nếu không hợp lệ.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            print("File JSON hợp lệ")
+            return data
+    except json.JSONDecodeError as e:
+        print("File JSON không hợp lệ:", e)
+        return None
+
 CLEAN_SESSION=False
 VLC_instance = VLC()
 player = VLCPlayer()
@@ -2351,13 +2366,15 @@ ser = serial.Serial('/dev/ttyS1', 115200, timeout=1)
 # kết nối wifi
 # Đọc file JSON
 
-with open('wifiConfig.json', 'r', encoding='utf-8') as file:
-    data = json.load(file)
-    # Truy cập các trường trong file JSON
-    ssid = data['ssid']    # Lấy trường 'ssid'
-    password = data['password']    # Lấy trường 'password'
-    print(ssid)
-    print(password)
+file_path = 'wifiConfig.json'
+data_wifi = validate_json_Wifi(file_path)
+if data_wifi:
+    print("Dữ liệu trong file JSON:", data_wifi)
+    # Ví dụ truy cập các trường
+    ssid = data_wifi.get('ssid', 'Không có trường ssid')
+    password = data_wifi.get('password', 'Không có trường password')
+    print("SSID:", ssid)
+    print("Password:", password)
 
 while run_flag:
     while not client.connected_flag and client.retry_count<3:
