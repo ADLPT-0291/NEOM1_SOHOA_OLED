@@ -1239,60 +1239,20 @@ def KiemTraPhim():
             nhapnhay_wifi.start()
             os.system("sudo systemctl enable myappserver.service")
             os.system("sudo systemctl start myappserver.service")
-            os.system("sudo service hostapd start")
-            result = setup_hotspot(ssid, password)
-            print(result)
+            os.system("sudo systemctl enable hostapd")
+            os.system("sudo systemctl start hostapd")
+           
         if demnhanphim == 10:
             nhapnhay_wifi.stop()
             control_led_connect(1)
             demnhanphim = 0
             os.system("sudo systemctl stop myappserver.service")
             os.system("sudo systemctl disable myappserver.service ")
-            os.system("sudo service hostapd stop")
-            os.system("sudo turn-wifi-into-apmode no")
+            os.system("sudo systemctl stop hostapd")
+            os.system("sudo systemctl disable hostapd")
             
 
-# setup chế độ hotspot
-def setup_hotspot(ssid: str, password: str):
-    """
-    Thiết lập chế độ hotspot Wi-Fi bằng cách chạy lệnh `turn-wifi-into-apmode`.
-    Tự động nhập SSID và mật khẩu (nhập mật khẩu 2 lần nếu cần).
 
-    Args:
-        ssid (str): Tên mạng Wi-Fi (SSID).
-        password (str): Mật khẩu của mạng Wi-Fi.
-
-    Returns:
-        str: Kết quả từ quá trình chạy lệnh.
-    """
-    try:
-        # Lệnh cần chạy
-        command = ["turn-wifi-into-apmode", "yes"]
-
-        # Chạy lệnh với subprocess và gửi dữ liệu đầu vào
-        process = subprocess.Popen(
-            command,
-            stdin=subprocess.PIPE,  # Cho phép ghi vào stdin
-            stdout=subprocess.PIPE,  # Đọc từ stdout
-            stderr=subprocess.PIPE   # Đọc từ stderr
-        )
-
-        # Dữ liệu nhập (SSID và mật khẩu nhập 2 lần)
-        inputs = f"{ssid}\n{password}\n{password}\n"
-
-        # Gửi dữ liệu đầu vào và chờ quá trình hoàn thành
-        stdout, stderr = process.communicate(input=inputs.encode())
-
-        # Kiểm tra kết quả
-        if process.returncode == 0:
-            return f"Hotspot activated successfully!\n{stdout.decode()}"
-        else:
-            return f"Failed to activate hotspot.\nError: {stderr.decode()}"
-
-    except FileNotFoundError:
-        return "Command not found: Please ensure 'turn-wifi-into-apmode' is installed and in PATH."
-    except Exception as e:
-        return f"An unexpected error occurred: {e}"
     
 # log bản tin
 def LogBanTin():
@@ -2414,7 +2374,7 @@ nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
 nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
 nhapnhatLedConnectCallApiloi.stop()
 kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
-callApipingServer = RepeatedTimer(20, pingServer)
+callApipingServer = RepeatedTimer(120, pingServer)
 pingApiTinh = RepeatedTimer(60, pingTinh)
 watchdog_start = RepeatedTimer(1, watchdogStart)
 nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
