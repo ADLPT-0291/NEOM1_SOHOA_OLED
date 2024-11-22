@@ -2090,10 +2090,10 @@ def on_connect(client, userdata, flags, rc):
         control_led_connect(1)
         """ call API xac nhan ket noi """
        # ip = requests.get('https://api.ipify.org').text
-        eth_connected = has_ipv4_address("eth0")
-        wifi_connected = has_ipv4_address("wlan0")
-        print(f"eth0 connected: {eth_connected}")
-        print(f"wlan0 connected: {wifi_connected}")
+        # eth_connected = has_ipv4_address("eth0")
+        # wifi_connected = has_ipv4_address("wlan0")
+        # print(f"eth0 connected: {eth_connected}")
+        # print(f"wlan0 connected: {wifi_connected}")
         ketnoimang = has_ipv4_address('eth0')      
         if ketnoimang == True:
             TrangThaiKetNoi = 'Ethernet'
