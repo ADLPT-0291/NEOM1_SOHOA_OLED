@@ -29,6 +29,7 @@ led_status = 203 #chan 7
 watchdog = 20 # chan 29
 led_connect = 21 # chan 31
 kich_modul4g = 9 # chan 37
+
 phim_wifi = 6 # chan 12
 mat_nguon = 0
 #kich_nguon_sac = 16 # chan 18
@@ -143,7 +144,8 @@ LichPhatDangNhan = {}
 version = "3"
 TrangThaiKetNoi = '4G,-10dbm'
 linkS3 = ''
-
+ssid = "gtech-ip"
+password = "123456789"
 ########
 ChoPhatBanTinTinh = False
 instance_amluong = vlc.Instance()
@@ -1235,17 +1237,63 @@ def KiemTraPhim():
         if demnhanphim == 5:
             nhapnhatLedConnectCallApiloi.stop()
             nhapnhay_wifi.start()
+            os.system("sudo systemctl enable myappserver.service")
             os.system("sudo systemctl start myappserver.service")
-            os.system("sudo systemctl start nginx")
             os.system("sudo service hostapd start")
+            result = setup_hotspot(ssid, password)
+            print(result)
         if demnhanphim == 10:
             nhapnhay_wifi.stop()
             control_led_connect(1)
             demnhanphim = 0
             os.system("sudo systemctl stop myappserver.service")
-            os.system("sudo systemctl stop nginx")
+            os.system("sudo systemctl disable myappserver.service ")
             os.system("sudo service hostapd stop")
+            os.system("sudo turn-wifi-into-apmode no")
+            
 
+# setup chế độ hotspot
+def setup_hotspot(ssid: str, password: str):
+    """
+    Thiết lập chế độ hotspot Wi-Fi bằng cách chạy lệnh `turn-wifi-into-apmode`.
+    Tự động nhập SSID và mật khẩu (nhập mật khẩu 2 lần nếu cần).
+
+    Args:
+        ssid (str): Tên mạng Wi-Fi (SSID).
+        password (str): Mật khẩu của mạng Wi-Fi.
+
+    Returns:
+        str: Kết quả từ quá trình chạy lệnh.
+    """
+    try:
+        # Lệnh cần chạy
+        command = ["turn-wifi-into-apmode", "yes"]
+
+        # Chạy lệnh với subprocess và gửi dữ liệu đầu vào
+        process = subprocess.Popen(
+            command,
+            stdin=subprocess.PIPE,  # Cho phép ghi vào stdin
+            stdout=subprocess.PIPE,  # Đọc từ stdout
+            stderr=subprocess.PIPE   # Đọc từ stderr
+        )
+
+        # Dữ liệu nhập (SSID và mật khẩu nhập 2 lần)
+        inputs = f"{ssid}\n{password}\n{password}\n"
+
+        # Gửi dữ liệu đầu vào và chờ quá trình hoàn thành
+        stdout, stderr = process.communicate(input=inputs.encode())
+
+        # Kiểm tra kết quả
+        if process.returncode == 0:
+            return f"Hotspot activated successfully!\n{stdout.decode()}"
+        else:
+            return f"Failed to activate hotspot.\nError: {stderr.decode()}"
+
+    except FileNotFoundError:
+        return "Command not found: Please ensure 'turn-wifi-into-apmode' is installed and in PATH."
+    except Exception as e:
+        return f"An unexpected error occurred: {e}"
+    
 # log bản tin
 def LogBanTin():
     global amluong
@@ -2098,7 +2146,7 @@ def on_message(client, userdata, msg):
         data = themsg.split() 
         if data[0] == id:
           control_led_status(0)
-          os.system("(cd /home/dung/h3_rssi && git pull https://phamdung1211:'"+ data[1] + "'@bitbucket.org/phamdung1211/h3_rssi.git && sudo shutdown -h now)")
+          os.system("(cd /root/h3_m1_plus && git pull https://phamdung1211:'"+ data[1] + "'@bitbucket.org/phamdung1211/h3_m1_plus.git && sudo shutdown -h now)")
       except:
         print('loi')
     #### khoi dong lai thiet bi ####
