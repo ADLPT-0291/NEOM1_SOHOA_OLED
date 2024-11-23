@@ -1239,7 +1239,7 @@ def KiemTraPhim():
             nhapnhay_wifi.start()
             os.system("sudo systemctl enable myappserver.service")
             os.system("sudo systemctl start myappserver.service")
-            os.system("sudo systemctl enable hostapd")
+            os.system("sudo nmcli con up MyHomeWiFi")
             os.system("sudo systemctl start hostapd")
            
         if demnhanphim == 10:
@@ -1247,9 +1247,9 @@ def KiemTraPhim():
             control_led_connect(1)
             demnhanphim = 0
             os.system("sudo systemctl stop myappserver.service")
-            os.system("sudo systemctl disable myappserver.service ")
-            os.system("sudo systemctl stop hostapd")
-            os.system("sudo systemctl disable hostapd")
+            os.system("sudo systemctl disable myappserver.service")
+            os.system("sudo nmcli con down MyHomeWiFi")
+           
             
 
 
