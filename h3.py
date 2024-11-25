@@ -457,7 +457,7 @@ def check_network_type(ser):
         time.sleep(1)  # Đợi cho phản hồi
         # Đọc dữ liệu phản hồi
         response = ser.read(ser.inWaiting()).decode('utf-8')
-        print(response)
+        print('response', response)
         # Kiểm tra xem mạng là 3G hay LTE
        # Kiểm tra và trả về loại mạng
         if "GSM" in response or "GPRS" in response:
