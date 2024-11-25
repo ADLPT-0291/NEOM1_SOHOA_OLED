@@ -427,7 +427,7 @@ def get_network_strength(ser):
             try:
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
-                print(rssi_str)
+               
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
@@ -1592,7 +1592,7 @@ def pingServer():
             'dbm': dbm,
             'LoaiMang': LoaiMang         
         }
-       
+        print(Rssi)
         responsePingtest = requests.post(domainPing, json = dataPing, timeout=20)
         trave = responsePingtest.json()
         if(trave['data'] != ''):
