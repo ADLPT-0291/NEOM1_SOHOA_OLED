@@ -421,12 +421,13 @@ def get_network_strength(ser):
         send_command(ser, 'AT+CSQ')
         # Đọc phản hồi từ module
         response = read_response(ser)
-        print(response)
+       
         # Kiểm tra xem phản hồi có chứa thông tin RSSI không
         if '+CSQ' in response:
             try:
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
+                print(rssi_str)
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
