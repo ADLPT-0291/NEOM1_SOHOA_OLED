@@ -427,7 +427,7 @@ def get_network_strength(ser):
             try:
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
-             
+                print(rssi_str)
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
@@ -537,7 +537,7 @@ def display_signal_2g_3g(rssi):
 def display_signal_lte(rssi):
     # Chuyển đổi giá trị RSSI sang dBm
     dbm = rssi_to_dbm(rssi)
-    print(dbm)
+   
     # Hiển thị mức độ tín hiệu tương ứng với mức dBm
     if isinstance(dbm, int) or isinstance(dbm, float):
         if dbm > -65:
