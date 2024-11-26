@@ -425,23 +425,6 @@ def send_command(ser, command):
 def read_response(ser):
     return ser.read(ser.in_waiting).decode('utf-8').strip()
 
-# đọc lệnh từ module Quectel
-def doctrangthai_loa_congsuat():
-    gpio.output(on_loa,1)
-    time.sleep(2)
-    status_loaL = gpio.input(input_loa_L)
-    status_loaR = gpio.input(input_loa_R)
-    gpio.output(led_status,1)
-    time.sleep(2)
-    status_congsuat = gpio.input(congsuat_in)
-    statusLoa = {
-        status_loaL: status_loaR,
-        status_loaR: status_loaL,
-        status_congsuat: status_congsuat
-    }
-    return statusLoa
-
-
 
 # đọc mức rssi của mạng
 def get_network_strength(ser):
@@ -1111,6 +1094,20 @@ def control_led_status(value):
         print('trangthaiLoa', trangthaiLoa)
     gpio.output(led_status,value)
 
+def doctrangthai_loa_congsuat():
+    gpio.output(on_loa,1)
+    time.sleep(2)
+    status_loaL = gpio.input(input_loa_L)
+    status_loaR = gpio.input(input_loa_R)
+    gpio.output(led_status,1)
+    time.sleep(2)
+    status_congsuat = gpio.input(congsuat_in)
+    statusLoa = {
+        'status_loaL': status_loaR,
+        'status_loaR': status_loaL,
+        'status_congsuat': status_congsuat
+    }
+    return statusLoa
 def control_led_connect(value):
     gpio.output(led_connect,value)
 
