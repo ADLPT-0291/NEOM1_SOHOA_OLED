@@ -427,7 +427,7 @@ def get_network_strength(ser):
             try:
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
-                print('rssi_str',rssi_str)
+             
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
@@ -457,7 +457,7 @@ def check_network_type(ser):
         time.sleep(1)  # Đợi cho phản hồi
         # Đọc dữ liệu phản hồi
         response = ser.read(ser.inWaiting()).decode('utf-8')
-        print('response', response)
+     
         # Kiểm tra xem mạng là 3G hay LTE
        # Kiểm tra và trả về loại mạng
         if "GSM" in response or "GPRS" in response:
@@ -537,6 +537,7 @@ def display_signal_2g_3g(rssi):
 def display_signal_lte(rssi):
     # Chuyển đổi giá trị RSSI sang dBm
     dbm = rssi_to_dbm(rssi)
+    print(dbm)
     # Hiển thị mức độ tín hiệu tương ứng với mức dBm
     if isinstance(dbm, int) or isinstance(dbm, float):
         if dbm > -65:
