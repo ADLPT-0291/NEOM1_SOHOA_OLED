@@ -427,11 +427,12 @@ def get_network_strength(ser):
             try:
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
-                print(rssi_str)
+               
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
-                
+                print(rssi_str)
+                print(LoaiMang)
                 if LoaiMang == '2G' or LoaiMang == '3G':
                     return display_signal_2g_3g(rssi)
                 elif LoaiMang == 'LTE (4G)':          
