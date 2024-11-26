@@ -1094,6 +1094,7 @@ def control_led_status(value):
         print('trangthaiLoa', trangthaiLoa)
     else:
         gpio.output(led_status,0)
+        gpio.output(on_loa,0)
 
 def doctrangthai_loa_congsuat():
     gpio.output(on_loa,1)
