@@ -30,6 +30,11 @@ watchdog = 20 # chan 29
 led_connect = 21 # chan 31
 kich_modul4g = 9 # chan 37
 
+input_loa_L = 17 # chân 26
+input_loa_R = 67 # chân 24
+on_loa = 1 # chan 22
+congsuat_in = 18 # chan 28
+
 phim_wifi = 6 # chan 12
 mat_nguon = 0
 #kich_nguon_sac = 16 # chan 18
@@ -44,6 +49,13 @@ gpio.pullup(mat_nguon, gpio.PULLDOWN)    #Enable pull-down
 gpio.output(kich_modul4g, 1)
 gpio.output(watchdog, 0)
 
+gpio.setcfg(on_loa, gpio.OUTPUT)
+gpio.setcfg(input_loa_L, gpio.INPUT)   #Configure PE11 as input
+gpio.pullup(input_loa_L, gpio.PULLDOWN)    #Enable pull-down
+gpio.setcfg(input_loa_R, gpio.INPUT)   #Configure PE11 as input
+gpio.pullup(input_loa_R, gpio.PULLDOWN)    #Enable pull-down
+gpio.setcfg(congsuat_in, gpio.INPUT)   #Configure PE11 as input
+gpio.pullup(congsuat_in, gpio.PULLDOWN)    #Enable pull-down
 ######### khai bao domain ##########
 domainMqtt = url.domainMqtt
 portMqtt = url.portMqtt
@@ -413,6 +425,24 @@ def send_command(ser, command):
 def read_response(ser):
     return ser.read(ser.in_waiting).decode('utf-8').strip()
 
+# đọc lệnh từ module Quectel
+def doctrangthai_loa_congsuat():
+    gpio.output(on_loa,1)
+    time.sleep(2)
+    status_loaL = gpio.input(input_loa_L)
+    status_loaR = gpio.input(input_loa_R)
+    gpio.output(led_status,1)
+    time.sleep(2)
+    status_congsuat = gpio.input(congsuat_in)
+    statusLoa = {
+        status_loaL: status_loaR,
+        status_loaR: status_loaL,
+        status_congsuat: status_congsuat
+    }
+    return statusLoa
+
+
+
 # đọc mức rssi của mạng
 def get_network_strength(ser):
     global LoaiMang
@@ -431,8 +461,6 @@ def get_network_strength(ser):
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
-                print('rssi_str', rssi_str)
-                print(LoaiMang)
                 if LoaiMang == '2G' or LoaiMang == '3G':
                     return display_signal_2g_3g(rssi)
                 elif LoaiMang == 'LTE (4G)':          
@@ -1078,6 +1106,9 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
+    if value == 1:
+        trangthaiLoa = doctrangthai_loa_congsuat()
+        print('trangthaiLoa', trangthaiLoa)
     gpio.output(led_status,value)
 
 def control_led_connect(value):
@@ -1257,10 +1288,6 @@ def KiemTraPhim():
             os.system("sudo systemctl disable myappserver.service")
             os.system("sudo nmcli con down MyHomeWiFi")
            
-            
-
-
-    
 # log bản tin
 def LogBanTin():
     global amluong
