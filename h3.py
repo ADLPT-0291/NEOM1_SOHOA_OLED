@@ -1307,7 +1307,7 @@ def LogBanTin():
           'thoigianphat': int(thoigianphat),
           'volume': amluong,
         }
-        responsePingtest = requests.post(domainLogbantin, json = dataLog, timeout=5)
+        responsePingtest = requests.post(domainLogbantin, json = dataLog, timeout=30)
     except Exception as e:
           print('Loi gui log ban tin:' + str(e))
 
@@ -1315,7 +1315,7 @@ def LogBanTin():
 def api_xacnhanketnoi(data):
     global amluong, linkS3, domainAddPlaylist, domainDeletePlaylist, NoiDungPhat, ThoiDiemBatDau, MaNhaCungCap, DichID,TenDich, trangthaiguiApi, userName, password, domainLoginTinh, domainPingTinh, domainLogTinh, imel, tenthietbi, madiaban, tendiaban, lat, lng, Status, Video, khoaguidulieu
     try:
-        responsePingtest = requests.post(domainXacnhanketnoi, json = data, timeout=20)
+        responsePingtest = requests.post(domainXacnhanketnoi, json = data, timeout=30)
         jsonResponse = responsePingtest.json() 
         if(jsonResponse['success'] == True):
             #setVolume(jsonResponse['data']['data']['volume'])
