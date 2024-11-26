@@ -431,7 +431,7 @@ def get_network_strength(ser):
                 # Chuyển đổi RSSI sang dạng số nguyên
                 rssi = int(rssi_str)
                 LoaiMang = check_network_type(ser)
-                print(rssi_str)
+                print('rssi_str', rssi_str)
                 print(LoaiMang)
                 if LoaiMang == '2G' or LoaiMang == '3G':
                     return display_signal_2g_3g(rssi)
@@ -1703,6 +1703,7 @@ def ledConnectNhapnhayLoiCallApi():
 def layRssiNhamang():
     global Rssi, dbm, TenNhaMang
     dataRssi = get_network_strength(ser)
+    print('dataRssi', dataRssi)
     if dataRssi is not None:
         Rssi = dataRssi['signal']
         dbm = dataRssi['dbm']
