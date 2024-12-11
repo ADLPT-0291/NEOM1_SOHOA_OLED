@@ -438,7 +438,7 @@ def get_network_strength(ser):
         # Kiểm tra xem phản hồi có chứa thông tin RSSI không
         if '+CSQ' in response:
             try:
-                print('response', response)
+                #print('response', response)
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
                
