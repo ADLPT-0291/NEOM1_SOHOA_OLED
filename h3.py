@@ -438,6 +438,7 @@ def get_network_strength(ser):
         # Kiểm tra xem phản hồi có chứa thông tin RSSI không
         if '+CSQ' in response:
             try:
+                print('response', response)
                 # Tách phần RSSI từ phản hồi
                 rssi_str = response.split(':')[1].split(',')[0].strip()
                
@@ -2413,7 +2414,7 @@ nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
 nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
 nhapnhatLedConnectCallApiloi.stop()
 kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
-callApipingServer = RepeatedTimer(20, pingServer)
+callApipingServer = RepeatedTimer(120, pingServer)
 pingApiTinh = RepeatedTimer(60, pingTinh)
 watchdog_start = RepeatedTimer(1, watchdogStart)
 nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
