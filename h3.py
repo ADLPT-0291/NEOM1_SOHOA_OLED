@@ -31,7 +31,7 @@ led_connect = 21 # chan 31
 kich_modul4g = 9 # chan 37
 
 input_loa_L = 17 # chân 26
-input_loa_R = 67 # chân 24
+input_loa_R = 19 # chân 27
 on_loa = 1 # chan 22
 congsuat_in = 18 # chan 28
 
@@ -2414,7 +2414,7 @@ nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
 nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
 nhapnhatLedConnectCallApiloi.stop()
 kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
-callApipingServer = RepeatedTimer(120, pingServer)
+callApipingServer = RepeatedTimer(20, pingServer)
 pingApiTinh = RepeatedTimer(60, pingTinh)
 watchdog_start = RepeatedTimer(1, watchdogStart)
 nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
