@@ -32,7 +32,7 @@ kich_modul4g = 9 # chan 37
 
 input_loa_L = 17 # chân 26
 input_loa_R = 19 # chân 27
-on_loa = 1 # chan 22
+on_loa = 1 # chan 22 
 congsuat_in = 18 # chan 28
 
 phim_wifi = 6 # chan 12
@@ -178,6 +178,8 @@ idBanTinTinhDangPhat = ''
 idLichPhatTinhDangPhat = ''
 thoiGianBatDauPhatTinh = None
 
+status_loaL = 0
+status_loaR = 0
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer     = None
@@ -1091,8 +1093,12 @@ def get_ip_address():
   
 def control_led_status(value):
     if value == 1:
+        #gpio.output(led_status,1)
+        gpio.output(on_loa,1)
+        trangthaiLoa = doctrangthai_loa_congsuat()
+        time.sleep(5)
         gpio.output(led_status,1)
-        time.sleep(2)
+        time.sleep(5)
         trangthaiLoa = doctrangthai_loa_congsuat()
         if trangthaiLoa['status_congsuat'] == 1:
             gpio.output(led_status,1)
@@ -1105,6 +1111,7 @@ def control_led_status(value):
         gpio.output(on_loa,0)
 
 def doctrangthai_loa_congsuat():
+    global status_loaL, status_loaR
     gpio.output(on_loa,1)
     time.sleep(2)
     status_loaL = gpio.input(input_loa_L)
