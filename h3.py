@@ -1093,20 +1093,26 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
+    global status_loaL, status_loaR, status_congsuat
     if value == 1:
         #gpio.output(led_status,1)
         gpio.output(on_loa,1)
-        trangthaiLoa = doctrangthai_loa_congsuat()
+        status_loaL = gpio.input(input_loa_L)
+        status_loaR = gpio.input(input_loa_R)
+        print('status_loaL', status_loaL)
+        print('status_loaR', status_loaR)
+        #trangthaiLoa = doctrangthai_loa_congsuat()
         time.sleep(5)
         gpio.output(led_status,1)
         time.sleep(5)
-        trangthaiLoa = doctrangthai_loa_congsuat()
-        if trangthaiLoa['status_congsuat'] == 1:
+        #trangthaiLoa = doctrangthai_loa_congsuat()
+        status_congsuat = gpio.input(congsuat_in)
+        if status_congsuat == 1:
             gpio.output(led_status,1)
         else:
             gpio.output(led_status,0)
             gpio.output(on_loa,0)
-        print('trangthaiLoa', trangthaiLoa)
+        print('trangthaiLoa', status_congsuat)
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
