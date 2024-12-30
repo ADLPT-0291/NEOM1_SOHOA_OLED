@@ -1102,7 +1102,6 @@ def control_led_status(value):
         #gpio.output(led_status,1)
         time.sleep(1)
         gpio.output(on_loa,1)
-        gpio.output(led_status,1)
         time.sleep(2)
         status_loaL = gpio.input(input_loa_L)
         status_loaR = gpio.input(input_loa_R)
@@ -1189,8 +1188,8 @@ def PhatBanTin(data):
     try:        
         PhatBanTinNoiBo = True
         if data['kieunguon'] == "Tiếp Sóng":
-            VLC_instance.Play_VLC(data['url'])
             control_led_status(1)
+            VLC_instance.Play_VLC(data['url'])
             NoiDungPhat = data['url']
             kiemtraPlay = 1       
             TrangThaiHoatDong = 0
