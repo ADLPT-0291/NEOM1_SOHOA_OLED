@@ -181,6 +181,7 @@ thoiGianBatDauPhatTinh = None
 status_loaL = 0
 status_loaR = 0
 status_congsuat = 0
+docLoa = 0
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer     = None
@@ -1093,20 +1094,22 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
-    global status_loaL, status_loaR, status_congsuat
+    global status_loaL, status_loaR, status_congsuat, docLoa
     print('nhan lenh phat', value)
     
     if value == 1:
-        gpio.output(on_loa,0)
-        gpio.output(led_status,0)
+        #gpio.output(on_loa,0)
+        #gpio.output(led_status,0)
         #gpio.output(led_status,1)
-        time.sleep(1)
-        gpio.output(on_loa,1)
-        time.sleep(2)
-        status_loaL = gpio.input(input_loa_L)
-        status_loaR = gpio.input(input_loa_R)
-        print('status_loaL', status_loaL)
-        print('status_loaR', status_loaR)
+        #time.sleep(1)
+        if docLoa == 0:
+            gpio.output(on_loa,1)
+            time.sleep(2)
+            status_loaL = gpio.input(input_loa_L)
+            status_loaR = gpio.input(input_loa_R)
+            print('status_loaL', status_loaL)
+            print('status_loaR', status_loaR)
+            docLoa = 1
         #trangthaiLoa = doctrangthai_loa_congsuat()
        # time.sleep(3)
         gpio.output(led_status,1)
@@ -1122,6 +1125,7 @@ def control_led_status(value):
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
+        docLoa = 1
 
 def doctrangthai_loa_congsuat():
     global status_loaL, status_loaR, status_congsuat
