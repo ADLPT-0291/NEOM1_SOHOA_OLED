@@ -1697,14 +1697,14 @@ def pingServer():
 
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
-    global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap
-    status_congsuat = gpio.input(congsuat_in)
-    print('status_congsuat', status_congsuat)
-    if status_congsuat == 1:
-        gpio.output(led_status,1)
-    else:
-        gpio.output(led_status,0)
-        gpio.output(on_loa,0)
+    # global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap
+    # status_congsuat = gpio.input(congsuat_in)
+    # print('status_congsuat', status_congsuat)
+    # if status_congsuat == 1:
+    #     gpio.output(led_status,1)
+    # else:
+    #     gpio.output(led_status,0)
+    #     gpio.output(on_loa,0)
 
     # station_status = VLC_instance.get_Status_Play()
     # if station_status == 'play':
