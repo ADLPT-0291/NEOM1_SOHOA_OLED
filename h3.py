@@ -1094,6 +1094,7 @@ def get_ip_address():
   
 def control_led_status(value):
     global status_loaL, status_loaR, status_congsuat
+    print('nhan lenh phat')
     if value == 1:
         #gpio.output(led_status,1)
         gpio.output(on_loa,1)
@@ -1693,6 +1694,12 @@ def pingServer():
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
     global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap
+    status_congsuat = gpio.input(congsuat_in)
+    if status_congsuat == 1:
+        gpio.output(led_status,1)
+    else:
+        gpio.output(led_status,0)
+        gpio.output(on_loa,0)
     # station_status = VLC_instance.get_Status_Play()
     # if station_status == 'play':
     #     demKiemtra = 0  # Nếu trạng thái là 'play', đặt đếm kiểm tra về 0
