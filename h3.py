@@ -1108,17 +1108,17 @@ def control_led_status(value):
         print('status_loaL', status_loaL)
         print('status_loaR', status_loaR)
         #trangthaiLoa = doctrangthai_loa_congsuat()
-        time.sleep(3)
+       # time.sleep(3)
         gpio.output(led_status,1)
-        time.sleep(3)
+        #time.sleep(3)
         #trangthaiLoa = doctrangthai_loa_congsuat()
-        status_congsuat = gpio.input(congsuat_in)
-        if status_congsuat == 1:
-            gpio.output(led_status,1)
-        else:
-            gpio.output(led_status,0)
-            gpio.output(on_loa,0)
-        print('trangthaiLoa', status_congsuat)
+        # status_congsuat = gpio.input(congsuat_in)
+        # if status_congsuat == 1:
+        #     gpio.output(led_status,1)
+        # else:
+        #     gpio.output(led_status,0)
+        #     gpio.output(on_loa,0)
+        # print('trangthaiLoa', status_congsuat)
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
@@ -1698,8 +1698,8 @@ def pingServer():
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
     global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap
-    # status_congsuat = gpio.input(congsuat_in)
-    # print('status_congsuat', status_congsuat)
+    status_congsuat = gpio.input(congsuat_in)
+    print('status_congsuat', status_congsuat)
     # if status_congsuat == 1:
     #     gpio.output(led_status,1)
     # else:
