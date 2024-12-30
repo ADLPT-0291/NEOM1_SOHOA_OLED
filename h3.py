@@ -180,6 +180,7 @@ thoiGianBatDauPhatTinh = None
 
 status_loaL = 0
 status_loaR = 0
+status_congsuat = 0
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer     = None
@@ -1111,7 +1112,7 @@ def control_led_status(value):
         gpio.output(on_loa,0)
 
 def doctrangthai_loa_congsuat():
-    global status_loaL, status_loaR
+    global status_loaL, status_loaR, status_congsuat
     gpio.output(on_loa,1)
     time.sleep(2)
     status_loaL = gpio.input(input_loa_L)
