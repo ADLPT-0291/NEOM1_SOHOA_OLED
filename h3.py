@@ -1102,6 +1102,11 @@ def control_led_status(value):
         #gpio.output(led_status,1)
         #time.sleep(1)
         gpio.output(on_loa,1)
+        time.sleep(1)
+        status_loaL = gpio.input(input_loa_L)
+        status_loaR = gpio.input(input_loa_R)
+        print('status_loaL', status_loaL)
+        print('status_loaR', status_loaR)
         gpio.output(led_status,1)
         # time.sleep(2)
         # status_loaL = gpio.input(input_loa_L)
@@ -1700,11 +1705,7 @@ def pingServer():
 def kiemtraTrangthaiPlay():
     global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap
     if kiemtraPlay == 1:
-        status_loaL = gpio.input(input_loa_L)
-        status_loaR = gpio.input(input_loa_R)
         status_congsuat = gpio.input(congsuat_in)
-        print('status_loaL', status_loaL)
-        print('status_loaR', status_loaR)
         print('status_congsuat', status_congsuat)
     # if status_congsuat == 1:
     #     gpio.output(led_status,1)
