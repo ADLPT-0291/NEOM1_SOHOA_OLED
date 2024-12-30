@@ -1109,6 +1109,8 @@ def doctrangthai_loa_congsuat():
     time.sleep(2)
     status_loaL = gpio.input(input_loa_L)
     status_loaR = gpio.input(input_loa_R)
+    print('status_loaL', status_loaL)
+    print('status_loaR', status_loaR)
     time.sleep(2)
     status_congsuat = gpio.input(congsuat_in)
     statusLoa = {
