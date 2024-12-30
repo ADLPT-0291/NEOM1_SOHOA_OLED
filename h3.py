@@ -1101,7 +1101,7 @@ def control_led_status(value):
         gpio.output(led_status,0)
         #gpio.output(led_status,1)
         #time.sleep(1)
-        gpio.output(on_loa,1)
+        gpio.output(on_loa,2)
         time.sleep(1)
         status_loaL = gpio.input(input_loa_L)
         status_loaR = gpio.input(input_loa_R)
