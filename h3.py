@@ -1094,7 +1094,7 @@ def get_ip_address():
   
 def control_led_status(value):
     global status_loaL, status_loaR, status_congsuat
-    print('nhan lenh phat')
+    print('nhan lenh phat', value)
     if value == 1:
         #gpio.output(led_status,1)
         gpio.output(on_loa,1)
