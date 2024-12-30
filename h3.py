@@ -1091,6 +1091,7 @@ def get_ip_address():
   
 def control_led_status(value):
     if value == 1:
+        time.sleep(10)
         trangthaiLoa = doctrangthai_loa_congsuat()
         if trangthaiLoa['status_congsuat'] == 1:
             gpio.output(led_status,1)
