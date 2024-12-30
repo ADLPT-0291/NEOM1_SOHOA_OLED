@@ -1108,7 +1108,7 @@ def control_led_status(value):
         #trangthaiLoa = doctrangthai_loa_congsuat()
         time.sleep(1)
         gpio.output(led_status,1)
-        time.sleep(1)
+        time.sleep(3)
         #trangthaiLoa = doctrangthai_loa_congsuat()
         status_congsuat = gpio.input(congsuat_in)
         if status_congsuat == 1:
