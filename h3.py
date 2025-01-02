@@ -1109,9 +1109,13 @@ def control_led_status(value):
             # print('status_loaR', status_loaR)
             docLoa = 1     
         gpio.output(led_status,1)
+        time.sleep(1)
+        gpio.output(mute,1)
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
+        time.sleep(1)
+        gpio.output(mute,0)
         docLoa = 0
 
 
@@ -1685,6 +1689,8 @@ def kiemtraTrangthaiPlay():
         status_congsuat = gpio.input(congsuat_in)
         if (status_congsuat == 0):
             gpio.output(led_status,0)
+            time.sleep(1)
+            gpio.output(mute,0)
         else:
             gpio.output(led_status,1)
         
