@@ -37,7 +37,7 @@ congsuat_in = 18 # chan 28
 
 phim_wifi = 6 # chan 12
 mat_nguon = 0
-mute = 67 # 24
+mute = 2 # 13
 #kich_nguon_sac = 16 # chan 18
 gpio.setcfg(led_status, gpio.OUTPUT)
 gpio.setcfg(watchdog, gpio.OUTPUT)
