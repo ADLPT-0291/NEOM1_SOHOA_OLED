@@ -37,6 +37,7 @@ congsuat_in = 18 # chan 28
 
 phim_wifi = 6 # chan 12
 mat_nguon = 0
+mute = 67 # 24
 #kich_nguon_sac = 16 # chan 18
 gpio.setcfg(led_status, gpio.OUTPUT)
 gpio.setcfg(watchdog, gpio.OUTPUT)
@@ -48,6 +49,7 @@ gpio.setcfg(mat_nguon, gpio.INPUT)   #Configure PE11 as input
 gpio.pullup(mat_nguon, gpio.PULLDOWN)    #Enable pull-down
 gpio.output(kich_modul4g, 1)
 gpio.output(watchdog, 0)
+gpio.setcfg(mute, gpio.OUTPUT)
 
 gpio.setcfg(on_loa, gpio.OUTPUT)
 gpio.setcfg(input_loa_L, gpio.INPUT)   #Configure PE11 as input
@@ -1103,8 +1105,8 @@ def control_led_status(value):
             time.sleep(2)
             status_loaL = gpio.input(input_loa_L)
             status_loaR = gpio.input(input_loa_R)
-            print('status_loaL', status_loaL)
-            print('status_loaR', status_loaR)
+            # print('status_loaL', status_loaL)
+            # print('status_loaR', status_loaR)
             docLoa = 1     
         gpio.output(led_status,1)
     else:
@@ -1608,7 +1610,7 @@ def pingServer():
             'status_loaR': status_loaL,
             'status_congsuat': status_congsuat
         }  
-        print('statusLoa', statusLoa)
+
         dataPing = {
             'phatbantintinh': phatbantintinh,
             'url': urldangphat,
