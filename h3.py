@@ -1110,12 +1110,12 @@ def control_led_status(value):
             docLoa = 1     
         gpio.output(led_status,1)
         time.sleep(1)
-        gpio.output(mute,0)
+        gpio.output(mute,1)
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
         time.sleep(1)
-        gpio.output(mute,1)
+        gpio.output(mute,0)
         docLoa = 0
 
 
@@ -1690,7 +1690,7 @@ def kiemtraTrangthaiPlay():
         if (status_congsuat == 0):
             gpio.output(led_status,0)
             time.sleep(1)
-            gpio.output(mute,1)
+            gpio.output(mute,0)
         else:
             gpio.output(led_status,1)
         
@@ -2454,7 +2454,7 @@ nhapnhay_wifi.stop()
 run_main=False
 run_flag=True
 # Khởi tạo lịch trình
-gpio.output(mute,1)
+
 scheduler = BackgroundScheduler()
 # check_lich_phat_tinh = scheduler.add_job(kiem_tra_thoi_gian_bat_dau, 'cron', minute='*/1')
 # check_lich_dung_tinh = scheduler.add_job(kiem_tra_thoi_gian_ket_thuc, 'cron', minute='*/1')
