@@ -1703,6 +1703,8 @@ def kiemtraTrangthaiPlay():
             gpio.output(mute,0)
         else:
             gpio.output(led_status,1)
+    else:
+        gpio.output(led_status,0)
         
     # if status_congsuat == 1:
     #     gpio.output(led_status,1)
