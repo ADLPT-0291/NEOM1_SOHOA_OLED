@@ -1096,6 +1096,7 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
+    print('value:', value)
     global status_loaL, status_loaR, status_congsuat, docLoa
     # print('nhan lenh phat', value)
     # print('docLoa', docLoa)
@@ -1105,8 +1106,8 @@ def control_led_status(value):
             time.sleep(2)
             status_loaL = gpio.input(input_loa_L)
             status_loaR = gpio.input(input_loa_R)
-            # print('status_loaL', status_loaL)
-            # print('status_loaR', status_loaR)
+            print('status_loaL', status_loaL)
+            print('status_loaR', status_loaR)
             docLoa = 1     
         gpio.output(led_status,1)
         time.sleep(1)
