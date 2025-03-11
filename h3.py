@@ -662,6 +662,7 @@ def job_GuiApiPhatLaiLichPhatKhanCap(LichPhat):
         responsePingtest = requests.post(domainGuiLichPhat, json = dataGui, timeout=5)
         trave = responsePingtest.json()
         if trave['data'] == 'true':
+            delete_job() 
             nguonphat = lap_qua_nguon_phat(LichPhat['GioBatDau'] , LichPhat['DanhSachNguonPhat'])
             kiem_tra_lich_phat_dang_phat(LichPhat, nguonphat)
         else:
@@ -1165,7 +1166,7 @@ def DungBanTin():
 
 # phát bản tin
 def PhatBanTin(data):
-    print('PhatBanTin')
+  
     global PhatBanTinNoiBo, NoiDungPhat, kiemtraPlay, demKiemtra, TrangThaiHoatDong, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao
     try:        
         PhatBanTinNoiBo = True
