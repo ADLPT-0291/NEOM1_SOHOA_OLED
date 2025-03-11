@@ -1165,6 +1165,7 @@ def DungBanTin():
 
 # phát bản tin
 def PhatBanTin(data):
+    print('PhatBanTin')
     global PhatBanTinNoiBo, NoiDungPhat, kiemtraPlay, demKiemtra, TrangThaiHoatDong, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao
     try:        
         PhatBanTinNoiBo = True
