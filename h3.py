@@ -661,12 +661,12 @@ def job_GuiApiPhatLaiLichPhatKhanCap(LichPhat):
         }
         responsePingtest = requests.post(domainGuiLichPhat, json = dataGui, timeout=5)
         trave = responsePingtest.json()
-        if trave['data'] == 'true':
+        # if trave['data'] == 'true':
             
-            nguonphat = lap_qua_nguon_phat(LichPhat['GioBatDau'] , LichPhat['DanhSachNguonPhat'])
-            kiem_tra_lich_phat_dang_phat(LichPhat, nguonphat)
-        else:
-            DungBanTin()  
+        #     nguonphat = lap_qua_nguon_phat(LichPhat['GioBatDau'] , LichPhat['DanhSachNguonPhat'])
+        #     kiem_tra_lich_phat_dang_phat(LichPhat, nguonphat)
+        # else:
+        #     DungBanTin()  
     except Exception as e:
             print('Loi Gui lich Phat lai Lich phat:' + str(e))
 
@@ -2359,24 +2359,24 @@ def on_message(client, userdata, msg):
             os.system(data['data'])
 
         ##### Ping Device #########
-        # if(data['command'] == 'ping-device'):
-        #         if(data['statusPlay'] == 'dungbantintinh'):    
-        #             phatbantintinh = False       
-        #             DungBanTin()
-        #         if(data['statusPlay'] == 'play'):  
-        #             linkS3 = data['urlS3'] 
-        #             status = player.get_state_2()
-        #             if status == 'Opening':                 
-        #                 pass
-        #             else:                  
-        #             # play bản tin  
-        #                 VLC_instance.Stop_VLC()
-        #                 LichPhatDangNhan = data['LichPhat']
-        #                 nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
-        #                 kiem_tra_lich_phat_dang_phat(data['LichPhat'],nguonphat)
+        if(data['command'] == 'ping-device'):
+                if(data['statusPlay'] == 'dungbantintinh'):    
+                    phatbantintinh = False       
+                    DungBanTin()
+                if(data['statusPlay'] == 'play'):  
+                    linkS3 = data['urlS3'] 
+                    status = player.get_state_2()
+                    if status == 'Opening':                 
+                        pass
+                    else:                  
+                    # play bản tin  
+                        VLC_instance.Stop_VLC()
+                        LichPhatDangNhan = data['LichPhat']
+                        nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
+                        kiem_tra_lich_phat_dang_phat(data['LichPhat'],nguonphat)
                       
-        #         if(data['statusPlay'] == 'stop'):
-        #             DungBanTin()
+                if(data['statusPlay'] == 'stop'):
+                    DungBanTin()
                  
             
       except Exception as e:
