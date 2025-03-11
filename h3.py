@@ -659,6 +659,7 @@ def job_GuiApiPhatLaiLichPhatKhanCap(LichPhat):
            'version': version,
            'LichPhat': LichPhat
         }
+      
         responsePingtest = requests.post(domainGuiLichPhat, json = dataGui, timeout=5)
         trave = responsePingtest.json()
         # if trave['data'] == 'true':
@@ -1097,7 +1098,7 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
-    print('value:', value)
+  
     global status_loaL, status_loaR, status_congsuat, docLoa
     # print('nhan lenh phat', value)
     # print('docLoa', docLoa)
@@ -1107,8 +1108,8 @@ def control_led_status(value):
             time.sleep(2)
             status_loaL = gpio.input(input_loa_L)
             status_loaR = gpio.input(input_loa_R)
-            print('status_loaL', status_loaL)
-            print('status_loaR', status_loaR)
+            # print('status_loaL', status_loaL)
+            # print('status_loaR', status_loaR)
             docLoa = 1     
         gpio.output(led_status,1)
         time.sleep(1)
@@ -1128,13 +1129,13 @@ def control_led_connect(value):
 def DungBanTin():
     global  idLichPhatTinhDangPhat, idBanTinTinhDangPhat, PhatBanTinNoiBo, IdLichDangPhatNoiBo, kiemtraPlay, TrangThaiHoatDong, ThoiDiemBatDau, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao, Status, NoiDungPhat
     try:
+        kiemtraPlay = 0
         idBanTinTinhDangPhat = ''
-        idLichPhatTinhDangPhat = ''
-     
+        idLichPhatTinhDangPhat = ''   
         PhatBanTinNoiBo = False
         VLC_instance.Stop_VLC()
         control_led_status(0)
-        kiemtraPlay = 0
+       
         TrangThaiHoatDong = 2
         ThoiDiemBatDau = 0
         # trang thai play #
@@ -1688,6 +1689,12 @@ def pingServer():
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
     global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap, status_congsuat
+    # Kiểm tra trạng thái phát thông tin nguồn
+    if phatbantintinh == True or PhatBanTinNoiBo == True or PhatKhanCap == True:
+        station_status = VLC_instance.get_Status_Play()
+        if station_status != 'play':
+            os.system("(sudo systemctl restart myapp.service)")
+            
     if kiemtraPlay == 1:
         status_congsuat = gpio.input(congsuat_in)
         if (status_congsuat == 0):
