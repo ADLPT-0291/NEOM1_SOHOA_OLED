@@ -180,9 +180,9 @@ idBanTinTinhDangPhat = ''
 idLichPhatTinhDangPhat = ''
 thoiGianBatDauPhatTinh = None
 
-status_loaL = 0
-status_loaR = 0
-status_congsuat = 0
+status_loaL = 1
+status_loaR = 1
+status_congsuat = 1
 docLoa = 0
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
