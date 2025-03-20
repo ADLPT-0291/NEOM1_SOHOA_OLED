@@ -2223,7 +2223,7 @@ def on_message(client, userdata, msg):
             LichPhatDangNhan = data['LichPhat']
             nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
             kiem_tra_lich_phat_dang_phat(data['LichPhat'],nguonphat)
-        
+            print('nhan lich phat')
         # dừng lịch phát nội bộ
         if data['status'] == "huy-lenh-phat-ngay":
             delete_job() 
