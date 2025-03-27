@@ -1644,7 +1644,7 @@ def pingServer():
             'LoaiMang': LoaiMang,
             'statusLoa': statusLoa      
         }
-      
+        print('trang thai play ping len server:', station_status)
         responsePingtest = requests.post(domainPing, json = dataPing, timeout=20)
         trave = responsePingtest.json()
         if(trave['data'] != ''):
