@@ -1167,9 +1167,10 @@ def DungBanTin():
 
 # phát bản tin
 def PhatBanTin(data):
-  
+    
     global PhatBanTinNoiBo, NoiDungPhat, kiemtraPlay, demKiemtra, TrangThaiHoatDong, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao
     try:        
+        print('PhatBanTin')
         PhatBanTinNoiBo = True
         if data['kieunguon'] == "Tiếp Sóng":
             control_led_status(1)
@@ -2379,6 +2380,7 @@ def on_message(client, userdata, msg):
                         pass
                     else:                  
                     # play bản tin  
+                        print('nhan ban tin từ ping server 20s')
                         VLC_instance.Stop_VLC()
                         LichPhatDangNhan = data['LichPhat']
                         nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
