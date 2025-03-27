@@ -1619,7 +1619,7 @@ def pingServer():
             'status_loaR': status_loaL,
             'status_congsuat': status_congsuat
         }  
-
+        seconds = time.time()
         dataPing = {
             'phatbantintinh': phatbantintinh,
             'url': urldangphat,
@@ -1642,11 +1642,13 @@ def pingServer():
             'MatDien': TrangThaiGuiMatDien,
             'dbm': dbm,
             'LoaiMang': LoaiMang,
-            'statusLoa': statusLoa      
+            'statusLoa': statusLoa,
+            'timePing':  int(seconds)  
         }
         print('trang thai play ping len server:', station_status)
         print('version:', version)
         print('IDLichDangPhat:', IdLichDangPhatNoiBo)
+        print('timePing:', dataPing['timePing'])
         responsePingtest = requests.post(domainPing, json = dataPing, timeout=20)
         trave = responsePingtest.json()
         if(trave['data'] != ''):
