@@ -1098,28 +1098,27 @@ def get_ip_address():
         return "0.0.0.0"
   
 def control_led_status(value):
-    gpio.output(led_status,value)
-    # global status_loaL, status_loaR, status_congsuat, docLoa
-    # # print('nhan lenh phat', value)
-    # # print('docLoa', docLoa)
-    # if value == 1:
-    #     if docLoa == 0:
-    #         gpio.output(on_loa,1)
-    #         time.sleep(2)
-    #         status_loaL = gpio.input(input_loa_L)
-    #         status_loaR = gpio.input(input_loa_R)
-    #         # print('status_loaL', status_loaL)
-    #         # print('status_loaR', status_loaR)
-    #         docLoa = 1     
-    #     gpio.output(led_status,1)
-    #     time.sleep(1)
-    #     gpio.output(mute,1)
-    # else:
-    #     gpio.output(led_status,0)
-    #     gpio.output(on_loa,0)
-    #     time.sleep(1)
-    #     gpio.output(mute,0)
-    #     docLoa = 0
+    global status_loaL, status_loaR, status_congsuat, docLoa
+    # print('nhan lenh phat', value)
+    # print('docLoa', docLoa)
+    if value == 1:
+        if docLoa == 0:
+            gpio.output(on_loa,1)
+            time.sleep(2)
+            status_loaL = gpio.input(input_loa_L)
+            status_loaR = gpio.input(input_loa_R)
+            # print('status_loaL', status_loaL)
+            # print('status_loaR', status_loaR)
+            docLoa = 1     
+        gpio.output(led_status,1)
+        time.sleep(1)
+        gpio.output(mute,1)
+    else:
+        gpio.output(led_status,0)
+        gpio.output(on_loa,0)
+        time.sleep(1)
+        gpio.output(mute,0)
+        docLoa = 0
 
 
 def control_led_connect(value):
@@ -1645,10 +1644,7 @@ def pingServer():
             'statusLoa': statusLoa,
             'timePing':  int(seconds)  
         }
-        print('trang thai play ping len server:', station_status)
-        print('version:', version)
-        print('IDLichDangPhat:', IdLichDangPhatNoiBo)
-        print('timePing:', dataPing['timePing'])
+       
         responsePingtest = requests.post(domainPing, json = dataPing, timeout=20)
         trave = responsePingtest.json()
         if(trave['data'] != ''):
@@ -2456,7 +2452,7 @@ client.on_message = on_message
 nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
 nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
 nhapnhatLedConnectCallApiloi.stop()
-#kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
+kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
 callApipingServer = RepeatedTimer(20, pingServer)
 pingApiTinh = RepeatedTimer(60, pingTinh)
 watchdog_start = RepeatedTimer(1, watchdogStart)
