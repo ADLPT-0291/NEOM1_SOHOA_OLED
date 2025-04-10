@@ -1169,7 +1169,7 @@ def PhatBanTin(data):
     
     global PhatBanTinNoiBo, NoiDungPhat, kiemtraPlay, demKiemtra, TrangThaiHoatDong, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao
     try:        
-        print('PhatBanTin')
+        #print('PhatBanTin')
         PhatBanTinNoiBo = True
         if data['kieunguon'] == "Tiếp Sóng":
             control_led_status(1)
@@ -1596,7 +1596,6 @@ def pingTinh():
         print('loi call api ping tinh:' + str(e))
       
        
-
 # Ping trạng thái thiết bị về server
 def pingServer():
     global loiketnoi, linkS3, LichPhatDangNhan, phatbantintinh, Video, NoiDungPhat, urldangphat, tenchuongtrinh, kieunguon, thoiluong, tennoidung, diachingoidung, kieuphat, nguoitao, taikhoantao, demLoicallApiPing, loiketnoi, kiemtraPlay, led_status, demKiemtra, mabantinnhan, trangthaiplay
@@ -2380,7 +2379,7 @@ def on_message(client, userdata, msg):
                         pass
                     else:                  
                     # play bản tin  
-                        print('nhan ban tin từ ping server 20s')
+                       # print('nhan ban tin từ ping server 20s')
                         VLC_instance.Stop_VLC()
                         LichPhatDangNhan = data['LichPhat']
                         nguonphat = lap_qua_nguon_phat(data['LichPhat']['GioBatDau'], data['LichPhat']['DanhSachNguonPhat'])
