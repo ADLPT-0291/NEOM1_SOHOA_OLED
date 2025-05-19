@@ -212,7 +212,9 @@ class VLCPlayer:
               '--no-xlib',
               '--no-video-title-show',
               '--no-video',
-              '--play-and-exit'
+              '--play-and-exit',
+              #sửa mới chỗ này ép buộc chỉ dùng alsa
+              '--aout=alsa'
           ]
         self.instance = vlc.Instance(options)
         self.player = self.instance.media_player_new()
@@ -1110,9 +1112,9 @@ def control_led_status(value):
             # print('status_loaL', status_loaL)
             # print('status_loaR', status_loaR)
             docLoa = 1     
-        gpio.output(led_status,1)
-        time.sleep(1)
-        gpio.output(mute,1)
+            gpio.output(led_status,1)
+            time.sleep(1)
+            gpio.output(mute,1)
     else:
         gpio.output(led_status,0)
         gpio.output(on_loa,0)
@@ -1690,21 +1692,23 @@ def pingServer():
 def kiemtraTrangthaiPlay():
     global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap, status_congsuat
     # Kiểm tra trạng thái phát thông tin nguồn
-    if phatbantintinh == True or PhatBanTinNoiBo == True or PhatKhanCap == True:
-        station_status = VLC_instance.get_Status_Play()
-        if station_status != 'play':
-            os.system("(sudo systemctl restart myapp.service)")
-            
     if kiemtraPlay == 1:
         status_congsuat = gpio.input(congsuat_in)
         if (status_congsuat == 0):
             gpio.output(led_status,0)
             time.sleep(1)
             gpio.output(mute,0)
-        else:
-            gpio.output(led_status,1)
-    else:
-        gpio.output(led_status,0)
+        # else:
+            # không cho bật lại
+            #gpio.output(led_status,1)
+            # print("congsuat_ok")
+            # Kiểm tra trạng thái phát thông tin nguồn
+        if phatbantintinh == True or PhatBanTinNoiBo == True or PhatKhanCap == True:
+            station_status = VLC_instance.get_Status_Play()
+            print("Trạng thái VLC hiện tại:", station_status)
+            if station_status != 'play':
+                print("reset")
+                os.system("(sudo systemctl restart myapp.service)")
         
     # if status_congsuat == 1:
     #     gpio.output(led_status,1)
