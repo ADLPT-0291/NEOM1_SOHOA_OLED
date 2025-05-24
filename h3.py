@@ -184,7 +184,7 @@ status_loaL = 1
 status_loaR = 1
 status_congsuat = 1
 docLoa = 0
-reset = 0
+demloi = 0
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer     = None
@@ -1691,7 +1691,7 @@ def pingServer():
 
 # Kiểm tra trạng thái Play
 def kiemtraTrangthaiPlay():
-    global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap, status_congsuat, reset
+    global kiemtraPlay, demKiemtra, phatbantintinh, PhatKhanCap, status_congsuat, demloi
     # Kiểm tra trạng thái phát thông tin nguồn
     if kiemtraPlay == 1:
         status_congsuat = gpio.input(congsuat_in)
@@ -1708,11 +1708,13 @@ def kiemtraTrangthaiPlay():
             station_status = VLC_instance.get_Status_Play()
             #print("Trạng thái VLC hiện tại:", station_status)
             if station_status != 'play':
-                reset += 1
-                if reset == 3:
-                    print("reset")
+                demloi += 1
+                if demloi == 3:
+                   # print("reset")
                     os.system("(sudo systemctl restart myapp.service)")
-                    reset = 0
+                    demloi = 0
+            else:
+                demloi = 0  # nếu đang play thì reset bộ đếm về 0
                 
         
     # if status_congsuat == 1:
