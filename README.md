@@ -1,1 +1,0 @@
-# NEOM1_SOHOA_OLED
