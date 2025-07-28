@@ -2616,7 +2616,9 @@ while run_flag:
         run_main=False
         try:
             print("connecting ",domainMqtt)         
-            client.connect(domainMqtt,portMqtt,60)      
+            client.connect(domainMqtt,portMqtt,60)
+            client.loop_start()
+      
             break #break from while loop
         except:
             print("Lỗi kết nối:", e)           
