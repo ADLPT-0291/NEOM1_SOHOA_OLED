@@ -198,7 +198,7 @@ volume = 50
 step = 5
 
 # Khởi tạo màn hình OLED
-serial_interface = luma_i2c(port=1, address=0x3C)
+serial_interface = luma_i2c(port=0, address=0x3C)
 device = ssd1306(serial_interface)
 width = device.width
 height = device.height
