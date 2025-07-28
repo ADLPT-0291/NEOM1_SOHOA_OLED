@@ -2618,7 +2618,8 @@ while run_flag:
             print("connecting ",domainMqtt)         
             client.connect(domainMqtt,portMqtt,60)      
             break #break from while loop
-        except:           
+        except:
+            print("Lỗi kết nối:", e)           
             # kiểm soát mất diện
             # if gpio.input(mat_nguon) == 0:     
             #     if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
