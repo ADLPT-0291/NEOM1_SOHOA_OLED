@@ -16,6 +16,7 @@ import urllib
 import url
 import khaibao
 import requests
+import configparser
 import socket
 import re
 import os
@@ -23,6 +24,14 @@ import vlc
 import random
 import string
 from urllib.parse import quote
+
+#khai bao oled
+from oled.render import canvas
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
+from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageFont, ImageDraw, Image
+
 gpio.init()
 local_timezone = pytz.timezone('Asia/Ho_Chi_Minh') 
 led_status = 203 #chan 7
@@ -185,6 +194,36 @@ status_congsuat = 1
 docLoa = 0
 demloi = 0
 
+# Thiết lập mức âm lượng ban đầu và bước nhảy khi tăng hoặc giảm âm lượng
+volume = 50
+step = 5
+
+# Khởi tạo màn hình OLED
+serial = i2c(port=0, address=0x3C)
+device = ssd1306(serial)
+width = device.width
+height = device.height
+# Tạo canvas
+image = Image.new("1", (width, height))
+draw = ImageDraw.Draw(image)
+# Dùng font bitmap đơn giản
+font = ImageFont.load_default()
+
+# Khởi tạo giờ, phút, giây ban đầu là 0
+REMOTE_SERVER = "8.8.8.8"
+hour = 0
+minute = 0
+second = 0
+darkice_process = ''
+darkice_cmd = ['darkice', '-c', '/etc/darkice.cfg']
+# Đường dẫn đến tệp cấu hình của Darkice
+CONFIG_FILE = "/etc/darkice.cfg"
+# Tạo đối tượng ConfigParser
+config = configparser.ConfigParser()
+config.optionxform = lambda option: option
+
+
+
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer     = None
@@ -207,6 +246,86 @@ class RepeatedTimer(object):
     self._timer.cancel()
     self.is_running = False
 #########
+
+
+# Hàm vẽ thanh bar
+def draw_volume_bar(level):
+  with canvas(device) as draw: 
+    bar_length = int((width - 20) * level / 100)
+    draw.rectangle((8, 23, width - 8, 37), outline=255)
+    draw.rectangle((10, 25, 10 + bar_length, 35), outline=255, fill=255)
+    # Vẽ chữ "Volume"
+    font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSans.ttf", size=14)
+    text_volume = "Volume"
+    text_bbox = draw.textbbox((0, 0), text_volume, font=font)
+    text_width = text_bbox[2] - text_bbox[0]
+    text_height = text_bbox[3] - text_bbox[1]
+    draw.text(((width - text_width) // 2, 5), text_volume, font=font, fill=255)
+    # Vẽ số mức âm lượng ở dưới thanh bar
+    font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSans.ttf", size=14)
+    text_bbox = draw.textbbox((0,0), str(volume), font=font)
+    text_width = text_bbox[2] - text_bbox[0]
+    text_height = text_bbox[3] - text_bbox[1]
+    draw.text(((width - text_width) // 2, 40), str(volume), font=font, fill=255)
+
+########### hien thi not connect ##########################
+def show_not_connect():
+  with canvas(device) as draw:
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
+    draw.text((6, 23), "No Connect!", font=font, fill=1)
+
+########## hien thị READY ################ 
+def show_ready():
+  with canvas(device) as draw:
+  
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
+    draw.text((30, 23), "READY", font=font, fill=1)
+
+########## hien thị Connecting... ################ 
+def show_connecting():
+  with canvas(device) as draw:
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0) 
+    draw.text((0, 23), "Connecting...", font=font, fill=1)
+
+########## hien thị stream ################ 
+def show_stream():
+  global second, minute, hour
+    # Tạo chuỗi thời gian để hiển thị trên màn hình OLED
+  #black_bitmap = Image.new('1', (device.width, device.height), 0)
+  time_str ="{:02d}:{:02d}:{:02d}".format(hour, minute, second)
+  with canvas(device) as draw:
+    font_time = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 28)
+    font = ImageFont.truetype("arial.ttf", 20)
+    draw.text((0, 0), "64Kb/s", font=font, fill=255)
+    draw.text((70, 0), 'Vol:'+ str(volume), font=font, fill=255)
+    draw.text((8, 30), time_str, font=font_time, fill=1)
+
+
+def count_time():
+  global second, minute, hour
+  start_time = datetime.strptime(start_time_str, "%a, %d %b %Y %H:%M:%S %z")
+  # Tính thời gian đến hiện tại
+  elapsed_time = datetime.now(timezone.utc) - start_time
+  second = elapsed_time.seconds
+  hour, remainder = divmod(second, 3600)
+  minute, second = divmod(remainder, 60)
+
+# Tắt màn hình OLED
+def turn_off_display():
+    # Tạo một bitmap đen có kích thước bằng với màn hình
+    black_bitmap = Image.new('1', (device.width, device.height), 0)
+    with canvas(device) as draw:
+      # Xóa toàn bộ màn hình bằng bitmap đen
+      draw.rectangle((0, 0, 128, 64), outline=0, fill=0) 
+      draw.bitmap((0, 0), black_bitmap, fill=0)
+       
+def count_time_show_volume():
+  global time_show_volume
+  time_show_volume +=1
+
 class VLCPlayer:
     def __init__(self, retries=5, delay=3):
         options = [
@@ -2457,19 +2576,19 @@ client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_disconnect=on_disconnect
 client.on_message = on_message
-nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
-nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
-nhapnhatLedConnectCallApiloi.stop()
-kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
-callApipingServer = RepeatedTimer(20, pingServer)
-pingApiTinh = RepeatedTimer(60, pingTinh)
-watchdog_start = RepeatedTimer(1, watchdogStart)
-nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
+# nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
+# nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
+# nhapnhatLedConnectCallApiloi.stop()
+# kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
+# callApipingServer = RepeatedTimer(20, pingServer)
+# pingApiTinh = RepeatedTimer(60, pingTinh)
+# watchdog_start = RepeatedTimer(1, watchdogStart)
+# nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
 ketnoimang = has_ipv4_address('eth0')
 
 if ketnoimang != True:
    layThongtinMang = RepeatedTimer(60, layRssiNhamang)
-nhapnhay_wifi.stop()
+# nhapnhay_wifi.stop()
 #setVolume(amluong)
 # speedtest_start = RepeatedTimer(60, get_speedtest)
 #pwmLed = RepeatedTimer(1, pwm_led)
@@ -2502,126 +2621,126 @@ while run_flag:
             break #break from while loop
         except:           
             # kiểm soát mất diện
-            if gpio.input(mat_nguon) == 0:     
-                if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
-                    ThoiGianMatDien = time.time()  
-                    data_object = {
-                        "type": "mat-dien",
-                        "ThoiGianMatDien": int(ThoiGianMatDien),
-                    }
-                    json_data = json.dumps(data_object)       
-                    client.publish(trangthaiplay,json_data)
-                    ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                               
-                    if ketquaMatdien == True:
-                        TrangThaiGuiMatDien = False  
+            # if gpio.input(mat_nguon) == 0:     
+            #     if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+            #         ThoiGianMatDien = time.time()  
+            #         data_object = {
+            #             "type": "mat-dien",
+            #             "ThoiGianMatDien": int(ThoiGianMatDien),
+            #         }
+            #         json_data = json.dumps(data_object)       
+            #         client.publish(trangthaiplay,json_data)
+            #         ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                               
+            #         if ketquaMatdien == True:
+            #             TrangThaiGuiMatDien = False  
              
-                # có điện
-                else:     
-                    if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
-                        ThoiGianMatDien = time.time()  
-                        data_object = {
-                            "type": "co-dien",
-                            "ThoiGianMatDien": int(ThoiGianMatDien),
-                        }
-                        json_data = json.dumps(data_object)       
-                        client.publish(trangthaiplay,json_data)
-                        ketquaMatdien = api_TrangThaiMatDien(True, ThoiGianMatDien)                     
-                        if ketquaMatdien == True:
-                            TrangThaiGuiMatDien = True  
+            #     # có điện
+            #     else:     
+            #         if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+            #             ThoiGianMatDien = time.time()  
+            #             data_object = {
+            #                 "type": "co-dien",
+            #                 "ThoiGianMatDien": int(ThoiGianMatDien),
+            #             }
+            #             json_data = json.dumps(data_object)       
+            #             client.publish(trangthaiplay,json_data)
+            #             ketquaMatdien = api_TrangThaiMatDien(True, ThoiGianMatDien)                     
+            #             if ketquaMatdien == True:
+            #                 TrangThaiGuiMatDien = True  
             print("connection attempt failed will retry")         
             # nhapnhatLedConnect.start()
             # nhapnhatLedConnectCallApiloi.stop()
             client.retry_count+=1         
-            if(client.retry_count == 2):
-              retartModul3g()
-              print('khoi dong lai modul lan dau...')
+            # if(client.retry_count == 2):
+            #   retartModul3g()
+            #   print('khoi dong lai modul lan dau...')
             #if client.retry_count>3:
                 #print('thoat')
                 #run_flag=False
-    if not run_main:   
-        client.loop_start()
-        while True:
+    # if not run_main:   
+    #     client.loop_start()
+    #     while True:
            
-            # kiểm soát mất diện
-            if gpio.input(mat_nguon) == 0:     
-                if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
-                    ThoiGianMatDien = time.time()  
-                    data_object = {
-                        "type": "mat-dien",
-                        "ThoiGianMatDien": int(ThoiGianMatDien),
-                    }
-                    json_data = json.dumps(data_object)       
-                    client.publish(trangthaiplay,json_data)
-                    ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                    
-                    if ketquaMatdien == True:
-                        TrangThaiGuiMatDien = False  
+    #         # kiểm soát mất diện
+    #         if gpio.input(mat_nguon) == 0:     
+    #             if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+    #                 ThoiGianMatDien = time.time()  
+    #                 data_object = {
+    #                     "type": "mat-dien",
+    #                     "ThoiGianMatDien": int(ThoiGianMatDien),
+    #                 }
+    #                 json_data = json.dumps(data_object)       
+    #                 client.publish(trangthaiplay,json_data)
+    #                 ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                    
+    #                 if ketquaMatdien == True:
+    #                     TrangThaiGuiMatDien = False  
              
-                # có điện
-                else:     
-                    if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
-                        ThoiGianMatDien = time.time()  
-                        data_object = {
-                            "type": "co-dien",
-                            "ThoiGianMatDien": int(ThoiGianMatDien),
-                        }
-                        json_data = json.dumps(data_object)       
-                        client.publish(trangthaiplay,json_data)
-                        ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)                      
-                        if ketquaMatdien == True:
-                            TrangThaiGuiMatDien = True  
-            if client.connected_flag: #wait for connack
-                client.retry_count=0 #reset counter
-                run_main=True
-                break
-            # if count>6 or client.bad_connection_flag: #don't wait forever
-            #   demRestartModul3g+=1
-            #   if demRestartModul3g >= 900:                  
-            #     print('reset lai modul 3g..')
-            #     retartModul3g()                  
-            # time.sleep(1)
-            count+=1
-    if run_main: 
-        try:          
-            # print('trạng thái:', player.get_state_2())        
-            if(PhatKhanCap == True):
-              PhatKhanCapBanTinTinh(DataPhatKhanCap)
-            if(ChuyenBanTin == True):
-              phatbantinKetiepTrongDanhSach(BanTinKeTiep)
-            time.sleep(1)           
-        except(KeyboardInterrupt):
-            print("keyboard Interrupt so ending")
-            DungBanTin()
-            os._exit(0)
-            #run_flag=False
-    # Mất điện
-    if gpio.input(mat_nguon) == 0:     
-        if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
-          ThoiGianMatDien = time.time()  
-          data_object = {
-              "type": "mat-dien",
-              "ThoiGianMatDien": int(ThoiGianMatDien),
-          }
-          json_data = json.dumps(data_object)           
-          client.publish(trangthaiplay,json_data)       
-          ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)   
-          if ketquaMatdien == True:
-             TrangThaiGuiMatDien = False  
+    #             # có điện
+    #             else:     
+    #                 if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+    #                     ThoiGianMatDien = time.time()  
+    #                     data_object = {
+    #                         "type": "co-dien",
+    #                         "ThoiGianMatDien": int(ThoiGianMatDien),
+    #                     }
+    #                     json_data = json.dumps(data_object)       
+    #                     client.publish(trangthaiplay,json_data)
+    #                     ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)                      
+    #                     if ketquaMatdien == True:
+    #                         TrangThaiGuiMatDien = True  
+    #         if client.connected_flag: #wait for connack
+    #             client.retry_count=0 #reset counter
+    #             run_main=True
+    #             break
+    #         # if count>6 or client.bad_connection_flag: #don't wait forever
+    #         #   demRestartModul3g+=1
+    #         #   if demRestartModul3g >= 900:                  
+    #         #     print('reset lai modul 3g..')
+    #         #     retartModul3g()                  
+    #         # time.sleep(1)
+    #         count+=1
+    # if run_main: 
+    #     try:          
+    #         # print('trạng thái:', player.get_state_2())        
+    #         if(PhatKhanCap == True):
+    #           PhatKhanCapBanTinTinh(DataPhatKhanCap)
+    #         if(ChuyenBanTin == True):
+    #           phatbantinKetiepTrongDanhSach(BanTinKeTiep)
+    #         time.sleep(1)           
+    #     except(KeyboardInterrupt):
+    #         print("keyboard Interrupt so ending")
+    #         DungBanTin()
+    #         os._exit(0)
+    #         #run_flag=False
+    # # Mất điện
+    # if gpio.input(mat_nguon) == 0:     
+    #     if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+    #       ThoiGianMatDien = time.time()  
+    #       data_object = {
+    #           "type": "mat-dien",
+    #           "ThoiGianMatDien": int(ThoiGianMatDien),
+    #       }
+    #       json_data = json.dumps(data_object)           
+    #       client.publish(trangthaiplay,json_data)       
+    #       ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)   
+    #       if ketquaMatdien == True:
+    #          TrangThaiGuiMatDien = False  
              
-    # có điện
-    else:     
-        if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
-          ThoiGianMatDien = time.time()  
-          data_object = {
-              "type": "co-dien",
-              "ThoiGianMatDien": int(ThoiGianMatDien),
-          }
-          json_data = json.dumps(data_object)               
-          client.publish(trangthaiplay,json_data)       
-          ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)        
-          if ketquaMatdien == True:
-             TrangThaiGuiMatDien = True       
-    if gpio.input(phim_wifi) == 1:
-      KiemTraPhim()
+    # # có điện
+    # else:     
+    #     if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+    #       ThoiGianMatDien = time.time()  
+    #       data_object = {
+    #           "type": "co-dien",
+    #           "ThoiGianMatDien": int(ThoiGianMatDien),
+    #       }
+    #       json_data = json.dumps(data_object)               
+    #       client.publish(trangthaiplay,json_data)       
+    #       ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)        
+    #       if ketquaMatdien == True:
+    #          TrangThaiGuiMatDien = True       
+    # if gpio.input(phim_wifi) == 1:
+    #   KiemTraPhim()
     
 print("quitting")
 # client.disconnect()
