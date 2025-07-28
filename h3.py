@@ -30,7 +30,6 @@ from luma.oled.render import canvas
 from luma.core.interface.serial import i2c
 from luma.oled.device import ssd1306
 from PIL import Image, ImageDraw, ImageFont
-from PIL import ImageFont, ImageDraw, Image
 
 gpio.init()
 local_timezone = pytz.timezone('Asia/Ho_Chi_Minh') 
