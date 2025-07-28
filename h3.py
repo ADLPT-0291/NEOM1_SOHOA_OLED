@@ -7,7 +7,8 @@ from apscheduler.schedulers.background import BlockingScheduler, BackgroundSched
 from datetime import datetime, timedelta
 import pytz
 import time
-import serial
+import serial  # Thư viện pyserial
+from luma.core.interface.serial import i2c as luma_i2c
 import subprocess
 import json
 import paho.mqtt.client as mqtt
@@ -197,8 +198,8 @@ volume = 50
 step = 5
 
 # Khởi tạo màn hình OLED
-serial = i2c(port=0, address=0x3C)
-device = ssd1306(serial)
+serial_interface = luma_i2c(port=1, address=0x3C)
+device = ssd1306(serial_interface)
 width = device.width
 height = device.height
 # Tạo canvas
