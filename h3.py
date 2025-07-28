@@ -26,7 +26,6 @@ import string
 from urllib.parse import quote
 
 #khai bao oled
-from luma.oled.render import canvas
 from luma.core.interface.serial import i2c
 from luma.oled.device import ssd1306
 from PIL import Image, ImageDraw, ImageFont
