@@ -2575,14 +2575,14 @@ client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_disconnect=on_disconnect
 client.on_message = on_message
-# nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
-# nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
-# nhapnhatLedConnectCallApiloi.stop()
-# kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
-# callApipingServer = RepeatedTimer(20, pingServer)
-# pingApiTinh = RepeatedTimer(60, pingTinh)
-# watchdog_start = RepeatedTimer(1, watchdogStart)
-# nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
+nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
+nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
+nhapnhatLedConnectCallApiloi.stop()
+kiemtraPlay = RepeatedTimer(10, kiemtraTrangthaiPlay)
+callApipingServer = RepeatedTimer(20, pingServer)
+pingApiTinh = RepeatedTimer(60, pingTinh)
+watchdog_start = RepeatedTimer(1, watchdogStart)
+nhapnhay_wifi = RepeatedTimer(0.15, led_nhapnhaywifi)
 ketnoimang = has_ipv4_address('eth0')
 
 if ketnoimang != True:
