@@ -282,7 +282,6 @@ mqtt.Client.bad_connection_flag=False #
 mqtt.Client.retry_count=0 #
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
-client.on_disconnect=on_disconnect
 client.on_message = on_message
 
 print("connecting ",domainMqtt)         
