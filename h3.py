@@ -236,13 +236,21 @@ def show_not_connect():
     draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
     draw.text((6, 23), "No Connect!", font=font, fill=1)
 
-########## hien thị READY ################ 
+########## hien thị WELCOME ################ 
 def show_ready():
   with canvas(device) as draw:
   
     font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
     draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
-    draw.text((30, 23), "READY", font=font, fill=1)
+    draw.text((30, 23), "WELCOME", font=font, fill=1)
+
+########## hien thị LOGO  ################ 
+def show_logo():
+  with canvas(device) as draw:
+  
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
+    draw.text((30, 23), "GTECH", font=font, fill=1)
 
 ########## hien thị Connecting... ################ 
 def show_connecting():
@@ -354,7 +362,8 @@ def on_connect(client, userdata, flags, rc):
         nhapnhatLedConnect.stop()
         nhapnhatLedConnectCallApiloi.stop()
         gpio.output(led_connect,True)
-        show_ready()      
+        show_ready()
+        show_logo()     
     else:
         print("Bad connection Returned code=",rc)
         client.bad_connection_flag=True
