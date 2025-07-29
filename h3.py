@@ -363,6 +363,7 @@ def on_connect(client, userdata, flags, rc):
         nhapnhatLedConnectCallApiloi.stop()
         gpio.output(led_connect,True)
         show_ready()
+        time.sleep(3)
         show_logo()     
     else:
         print("Bad connection Returned code=",rc)
