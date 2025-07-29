@@ -239,10 +239,20 @@ def show_not_connect():
 ########## hien thị WELCOME ################ 
 def show_ready():
   with canvas(device) as draw:
-  
     font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+        
+    # Lấy kích thước chữ
+    text = "WELCOME"
+    text_width, text_height = draw.textsize(text, font=font)
+        
+    # Tính tọa độ x, y để canh giữa
+    x = (128 - text_width) // 2
+    y = (64 - text_height) // 2
+
+    # Vẽ nền đen rồi vẽ chữ trắng
     draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
-    draw.text((30, 23), "WELCOME", font=font, fill=1)
+    draw.text((x, y), text, font=font, fill=1)
+
 
 ########## hien thị LOGO  ################ 
 def show_logo():
