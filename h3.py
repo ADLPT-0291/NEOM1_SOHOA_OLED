@@ -193,30 +193,6 @@ status_congsuat = 1
 docLoa = 0
 demloi = 0
 
-
-class RepeatedTimer(object):
-  def __init__(self, interval, function, *args, **kwargs):
-    self._timer     = None
-    self.interval   = interval
-    self.function   = function
-    self.args       = args
-    self.kwargs     = kwargs
-    self.is_running = False
-    self.start()
-  def _run(self):
-    self.is_running = False
-    self.start()
-    self.function(*self.args, **self.kwargs)
-  def start(self):
-    if not self.is_running:
-      self._timer = Timer(self.interval, self._run)
-      self._timer.start()
-      self.is_running = True
-  def stop(self):
-    self._timer.cancel()
-    self.is_running = False
-#########
-
 # Thiết lập mức âm lượng ban đầu và bước nhảy khi tăng hoặc giảm âm lượng
 volume = 50
 step = 5
@@ -231,25 +207,6 @@ image = Image.new("1", (width, height))
 draw = ImageDraw.Draw(image)
 # Dùng font bitmap đơn giản
 font = ImageFont.load_default()
-
-# Led Connect Nhấp nháy
-def ledConnectNhapnhay():
-    global ledConnectStatus
-    gpio.output(led_connect,not ledConnectStatus) 
-    ledConnectStatus = not ledConnectStatus
-
-# WatchDog
-def watchdogStart():
-  global watchdogStatus
-  gpio.output(watchdog,not watchdogStatus)
-  watchdogStatus = not watchdogStatus
-
-# Nhấp nháy led connect báo lỗi
-def ledConnectNhapnhayLoiCallApi():
-    global ledConnectStatus
-    gpio.output(led_connect,not ledConnectStatus) 
-    ledConnectStatus = not ledConnectStatus
-
 
 def on_message(client, userdata, msg):
     print(f"📩 Nhận từ topic {msg.topic}: {msg.payload.decode()}")
@@ -288,9 +245,7 @@ client.retry_count=0 #
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
-nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
-nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
-nhapnhatLedConnectCallApiloi.stop()
+
 
 while run_flag:
     while not client.connected_flag and client.retry_count<3:
