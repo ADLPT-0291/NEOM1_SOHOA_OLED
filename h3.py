@@ -242,7 +242,7 @@ def show_ready():
   
     font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
     draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
-    draw.text((16, 21), "WELCOME", font=font, fill=1)
+    draw.text((15, 23), "WELCOME", font=font, fill=1)
 
 ########## hien thị LOGO  ################ 
 def show_logo():
