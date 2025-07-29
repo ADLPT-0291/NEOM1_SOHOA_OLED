@@ -247,13 +247,15 @@ client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
 
 
+
 while run_flag:
     while not client.connected_flag and client.retry_count<3:
         count=0 
         run_main=False
         try:
             print("connecting ",domainMqtt)         
-            client.connect(domainMqtt,portMqtt,60)      
+            client.connect(domainMqtt,portMqtt,60)  
+            client.loop_forever()    
             break #break from while loop
         except:           
             print("connection attempt failed will retry")         
