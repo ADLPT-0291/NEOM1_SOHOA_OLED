@@ -271,7 +271,8 @@ def on_connect(client, userdata, flags, rc):
         client.bad_connection_flag=True
 ###########################################################
 
-
+run_main=False
+run_flag=True
 
 
 client = mqtt.Client()    #create new instance
@@ -284,6 +285,142 @@ client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
 
-print("connecting ",domainMqtt)         
-client.connect(domainMqtt,portMqtt,60)  
-client.loop_forever()
+# print("connecting ",domainMqtt)         
+# client.connect(domainMqtt,portMqtt,60)  
+# client.loop_forever()
+
+
+while run_flag:
+    while not client.connected_flag and client.retry_count<3:
+        count=0 
+        run_main=False
+        try:
+            print("connecting ",domainMqtt)         
+            client.connect(domainMqtt,portMqtt,60)      
+            break #break from while loop
+        except:           
+            # kiểm soát mất diện
+            # if gpio.input(mat_nguon) == 0:     
+            #     if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+            #         ThoiGianMatDien = time.time()  
+            #         data_object = {
+            #             "type": "mat-dien",
+            #             "ThoiGianMatDien": int(ThoiGianMatDien),
+            #         }
+            #         json_data = json.dumps(data_object)       
+            #         client.publish(trangthaiplay,json_data)
+            #         ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                               
+            #         if ketquaMatdien == True:
+            #             TrangThaiGuiMatDien = False  
+             
+            #     # có điện
+            #     else:     
+            #         if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+            #             ThoiGianMatDien = time.time()  
+            #             data_object = {
+            #                 "type": "co-dien",
+            #                 "ThoiGianMatDien": int(ThoiGianMatDien),
+            #             }
+            #             json_data = json.dumps(data_object)       
+            #             client.publish(trangthaiplay,json_data)
+            #             ketquaMatdien = api_TrangThaiMatDien(True, ThoiGianMatDien)                     
+            #             if ketquaMatdien == True:
+            #                 TrangThaiGuiMatDien = True  
+            print("connection attempt failed will retry")         
+            # nhapnhatLedConnect.start()
+            # nhapnhatLedConnectCallApiloi.stop()
+            client.retry_count+=1         
+            # if(client.retry_count == 2):
+            #   retartModul3g()
+            #   print('khoi dong lai modul lan dau...')
+            #if client.retry_count>3:
+                #print('thoat')
+                #run_flag=False
+    # if not run_main:   
+    #     client.loop_start()
+    #     while True:
+           
+    #         # kiểm soát mất diện
+    #         if gpio.input(mat_nguon) == 0:     
+    #             if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+    #                 ThoiGianMatDien = time.time()  
+    #                 data_object = {
+    #                     "type": "mat-dien",
+    #                     "ThoiGianMatDien": int(ThoiGianMatDien),
+    #                 }
+    #                 json_data = json.dumps(data_object)       
+    #                 client.publish(trangthaiplay,json_data)
+    #                 ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)                    
+    #                 if ketquaMatdien == True:
+    #                     TrangThaiGuiMatDien = False  
+             
+    #             # có điện
+    #             else:     
+    #                 if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+    #                     ThoiGianMatDien = time.time()  
+    #                     data_object = {
+    #                         "type": "co-dien",
+    #                         "ThoiGianMatDien": int(ThoiGianMatDien),
+    #                     }
+    #                     json_data = json.dumps(data_object)       
+    #                     client.publish(trangthaiplay,json_data)
+    #                     ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)                      
+    #                     if ketquaMatdien == True:
+    #                         TrangThaiGuiMatDien = True  
+    #         if client.connected_flag: #wait for connack
+    #             client.retry_count=0 #reset counter
+    #             run_main=True
+    #             break
+    #         # if count>6 or client.bad_connection_flag: #don't wait forever
+    #         #   demRestartModul3g+=1
+    #         #   if demRestartModul3g >= 900:                  
+    #         #     print('reset lai modul 3g..')
+    #         #     retartModul3g()                  
+    #         # time.sleep(1)
+    #         count+=1
+    # if run_main: 
+    #     try:          
+    #         # print('trạng thái:', player.get_state_2())        
+    #         if(PhatKhanCap == True):
+    #           PhatKhanCapBanTinTinh(DataPhatKhanCap)
+    #         if(ChuyenBanTin == True):
+    #           phatbantinKetiepTrongDanhSach(BanTinKeTiep)
+    #         time.sleep(1)           
+    #     except(KeyboardInterrupt):
+    #         print("keyboard Interrupt so ending")
+    #         DungBanTin()
+    #         os._exit(0)
+    #         #run_flag=False
+    # # Mất điện
+    # if gpio.input(mat_nguon) == 0:     
+    #     if TrangThaiGuiMatDien == True or TrangThaiGuiMatDien == None:   
+    #       ThoiGianMatDien = time.time()  
+    #       data_object = {
+    #           "type": "mat-dien",
+    #           "ThoiGianMatDien": int(ThoiGianMatDien),
+    #       }
+    #       json_data = json.dumps(data_object)           
+    #       client.publish(trangthaiplay,json_data)       
+    #       ketquaMatdien = api_TrangThaiMatDien(False,  ThoiGianMatDien)   
+    #       if ketquaMatdien == True:
+    #          TrangThaiGuiMatDien = False  
+             
+    # # có điện
+    # else:     
+    #     if TrangThaiGuiMatDien == False or TrangThaiGuiMatDien == None:        
+    #       ThoiGianMatDien = time.time()  
+    #       data_object = {
+    #           "type": "co-dien",
+    #           "ThoiGianMatDien": int(ThoiGianMatDien),
+    #       }
+    #       json_data = json.dumps(data_object)               
+    #       client.publish(trangthaiplay,json_data)       
+    #       ketquaMatdien = api_TrangThaiMatDien(True,  ThoiGianMatDien)        
+    #       if ketquaMatdien == True:
+    #          TrangThaiGuiMatDien = True       
+    # if gpio.input(phim_wifi) == 1:
+    #   KiemTraPhim()
+    
+print("quitting")
+# client.disconnect()
+# client.loop_stop()
