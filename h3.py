@@ -232,6 +232,27 @@ class RepeatedTimer(object):
     self.is_running = False
 
 
+############### Blinl led connect ###########################
+def ledConnectNhapnhay():
+    global ledConnectStatus
+    gpio.output(led_connect,not ledConnectStatus) 
+    ledConnectStatus = not ledConnectStatus
+#############################################################
+
+########## ham kich sung modul watchdog #####################
+def watchdogStart():
+  global watchdogStatus
+  gpio.output(watchdog,not watchdogStatus)
+  watchdogStatus = not watchdogStatus
+############################################################
+
+###### led connect nhap nhay canh bao call Api loi #########
+def ledConnectNhapnhayLoiCallApi():
+    global ledConnectStatus
+    gpio.output(led_connect,not ledConnectStatus) 
+    ledConnectStatus = not ledConnectStatus
+############################################################
+
 ############ khoi dong lai modul 3g ########################
 def retartModul3g():
     global demRestartModul3g
@@ -274,7 +295,10 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe(dieukhienplay)
         client.subscribe(yeucauguidulieu)
         client.subscribe(reset)
-        client.connected_flag=True         
+        client.connected_flag=True   
+        nhapnhatLedConnect.stop()
+        nhapnhatLedConnectCallApiloi.stop()
+        gpio.output(led_connect,True)      
     else:
         print("Bad connection Returned code=",rc)
         client.bad_connection_flag=True
@@ -290,6 +314,10 @@ client = mqtt.Client()    #create new instance
 client.connected_flag=False #create flags
 client.bad_connection_flag=False #
 client.retry_count=0 #
+nhapnhatLedConnect = RepeatedTimer(1, ledConnectNhapnhay)
+nhapnhatLedConnectCallApiloi = RepeatedTimer(0.2, ledConnectNhapnhayLoiCallApi)
+nhapnhatLedConnectCallApiloi.stop()
+watchdog_start = RepeatedTimer(1, watchdogStart)
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
