@@ -9,6 +9,7 @@ import pytz
 import time
 import serial  # Thư viện pyserial
 from luma.core.interface.serial import i2c as luma_i2c
+from luma.core.render import canvas
 import subprocess
 import json
 import paho.mqtt.client as mqtt
@@ -208,6 +209,60 @@ draw = ImageDraw.Draw(image)
 # Dùng font bitmap đơn giản
 font = ImageFont.load_default()
 
+# Hàm vẽ thanh bar
+def draw_volume_bar(level):
+  with canvas(device) as draw: 
+    bar_length = int((width - 20) * level / 100)
+    draw.rectangle((8, 23, width - 8, 37), outline=255)
+    draw.rectangle((10, 25, 10 + bar_length, 35), outline=255, fill=255)
+    # Vẽ chữ "Volume"
+    font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSans.ttf", size=14)
+    text_volume = "Volume"
+    text_bbox = draw.textbbox((0, 0), text_volume, font=font)
+    text_width = text_bbox[2] - text_bbox[0]
+    text_height = text_bbox[3] - text_bbox[1]
+    draw.text(((width - text_width) // 2, 5), text_volume, font=font, fill=255)
+    # Vẽ số mức âm lượng ở dưới thanh bar
+    font = ImageFont.truetype("/usr/share/fonts/truetype/freefont/FreeSans.ttf", size=14)
+    text_bbox = draw.textbbox((0,0), str(volume), font=font)
+    text_width = text_bbox[2] - text_bbox[0]
+    text_height = text_bbox[3] - text_bbox[1]
+    draw.text(((width - text_width) // 2, 40), str(volume), font=font, fill=255)
+
+########### hien thi not connect ##########################
+def show_not_connect():
+  with canvas(device) as draw:
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
+    draw.text((6, 23), "No Connect!", font=font, fill=1)
+
+########## hien thị READY ################ 
+def show_ready():
+  with canvas(device) as draw:
+  
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0)
+    draw.text((30, 23), "READY", font=font, fill=1)
+
+########## hien thị Connecting... ################ 
+def show_connecting():
+  with canvas(device) as draw:
+    font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 20)
+    draw.rectangle((0, 0, 128, 64), outline=0, fill=0) 
+    draw.text((0, 23), "Connecting...", font=font, fill=1)
+
+########## hien thị stream ################ 
+def show_stream():
+  global second, minute, hour
+    # Tạo chuỗi thời gian để hiển thị trên màn hình OLED
+  #black_bitmap = Image.new('1', (device.width, device.height), 0)
+  time_str ="{:02d}:{:02d}:{:02d}".format(hour, minute, second)
+  with canvas(device) as draw:
+    font_time = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 28)
+    font = ImageFont.truetype("arial.ttf", 20)
+    draw.text((0, 0), "64Kb/s", font=font, fill=255)
+    draw.text((70, 0), 'Vol:'+ str(volume), font=font, fill=255)
+    draw.text((8, 30), time_str, font=font_time, fill=1)
 
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
@@ -298,7 +353,8 @@ def on_connect(client, userdata, flags, rc):
         client.connected_flag=True   
         nhapnhatLedConnect.stop()
         nhapnhatLedConnectCallApiloi.stop()
-        gpio.output(led_connect,True)      
+        gpio.output(led_connect,True)
+        show_ready()      
     else:
         print("Bad connection Returned code=",rc)
         client.bad_connection_flag=True
