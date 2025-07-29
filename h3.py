@@ -239,9 +239,9 @@ run_flag=True
 client = mqtt.Client()    #create new instance
 
 #client.on_log=on_log #client logging
-mqtt.client.connected_flag=False #create flags
-mqtt.client.bad_connection_flag=False #
-mqtt.client.retry_count=0 #
+client.connected_flag=False #create flags
+client.bad_connection_flag=False #
+client.retry_count=0 #
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
