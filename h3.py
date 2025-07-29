@@ -226,46 +226,7 @@ def on_connect(client, userdata, flags, rc):
         client.subscribe(dieukhienplay)
         client.subscribe(yeucauguidulieu)
         client.subscribe(reset)
-        client.connected_flag=True
-        # nhapnhatLedConnect.stop()
-        # nhapnhatLedConnectCallApiloi.stop()
-        # control_led_connect(1)
-        """ call API xac nhan ket noi """
-       # ip = requests.get('https://api.ipify.org').text
-        # eth_connected = has_ipv4_address("eth0")
-        # wifi_connected = has_ipv4_address("wlan0")
-        # print(f"eth0 connected: {eth_connected}")
-        # print(f"wlan0 connected: {wifi_connected}")
-        # ketnoimang = has_ipv4_address('eth0')      
-        # if ketnoimang == True:
-        #     TrangThaiKetNoi = 'Ethernet'
-        #    # layThongtinMang.stop()
-        # else:
-        #     TenNhaMang = get_network_operator(ser)
-        #     dataRssi = get_network_strength(ser)
-        #     if dataRssi is not None:
-        #         Rssi = dataRssi['signal']
-        #         dbm = dataRssi['dbm']
-        #     TrangThaiKetNoi = '4G,-10dbm'
-
-        
-        # print(TenNhaMang)
-        # print(Rssi)
-
-        # dataXacnhanketnoi = {
-        #   'xacnhanketnoi': xacnhanketnoi,
-        #   'ip': get_ip_address(),
-        #   'phienban': phienban,   
-        #   'version': version,
-        #   'MainBoard': MainBoard,
-        #   'LoaiMangKetNoi': '0' if ketnoimang else '1',
-        #   'TenNhaMang': TenNhaMang,
-        #   'Rssi': Rssi,
-        #   'dbm': dbm,
-        #   'LoaiMang': LoaiMang
-        # }
-      
-        # api_xacnhanketnoi(dataXacnhanketnoi)           
+        client.connected_flag=True         
     else:
         print("Bad connection Returned code=",rc)
         client.bad_connection_flag=True
@@ -278,9 +239,9 @@ run_flag=True
 client = mqtt.Client()    #create new instance
 
 #client.on_log=on_log #client logging
-mqtt.Client.connected_flag=False #create flags
-mqtt.Client.bad_connection_flag=False #
-mqtt.Client.retry_count=0 #
+mqtt.client.connected_flag=False #create flags
+mqtt.client.bad_connection_flag=False #
+mqtt.client.retry_count=0 #
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
@@ -290,15 +251,15 @@ client.connect(domainMqtt,portMqtt,60)
 client.loop_forever()
 
 
-# while run_flag:
-#     while not client.connected_flag and client.retry_count<3:
-#         count=0 
-#         run_main=False
-#         try:
-#             print("connecting ",domainMqtt)         
-#             client.connect(domainMqtt,portMqtt,60)      
-#             break #break from while loop
-#         except:           
-#             print("connection attempt failed will retry")         
-#             client.retry_count+=1         
+while run_flag:
+    while not client.connected_flag and client.retry_count<3:
+        count=0 
+        run_main=False
+        try:
+            print("connecting ",domainMqtt)         
+            client.connect(domainMqtt,portMqtt,60)      
+            break #break from while loop
+        except:           
+            print("connection attempt failed will retry")         
+            client.retry_count+=1         
             
