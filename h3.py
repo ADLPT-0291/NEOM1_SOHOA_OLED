@@ -24,9 +24,12 @@ import re
 import os
 import vlc
 import random
+import alsaaudio
 import string
+import signal
 from urllib.parse import quote
-
+from threading  import Thread
+from datetime import datetime, timezone
 #khai bao oled
 from luma.core.interface.serial import i2c
 from luma.oled.device import ssd1306
@@ -66,6 +69,23 @@ gpio.setcfg(input_loa_R, gpio.INPUT)   #Configure PE11 as input
 gpio.pullup(input_loa_R, gpio.PULLDOWN)    #Enable pull-down
 gpio.setcfg(congsuat_in, gpio.INPUT)   #Configure PE11 as input
 gpio.pullup(congsuat_in, gpio.PULLDOWN)    #Enable pull-down
+
+
+
+
+
+# Khởi tạo giờ, phút, giây ban đầu là 0
+REMOTE_SERVER = "8.8.8.8"
+hour = 0
+minute = 0
+second = 0
+darkice_process = ''
+darkice_cmd = ['darkice', '-c', '/etc/darkice.cfg']
+# Đường dẫn đến tệp cấu hình của Darkice
+CONFIG_FILE = "/etc/darkice.cfg"
+# Tạo đối tượng ConfigParser
+config = configparser.ConfigParser()
+config.optionxform = lambda option: option
 ######### khai bao domain ##########
 domainMqtt = url.domainMqtt
 portMqtt = url.portMqtt
@@ -294,6 +314,149 @@ class RepeatedTimer(object):
     self._timer.cancel()
     self.is_running = False
 
+def count_time_show_volume():
+  global time_show_volume
+  time_show_volume +=1
+
+################# ham dieu khien volume ####################
+def setVolume(volume):
+  # Khởi tạo mixer
+  mixer = alsaaudio.Mixer('Mic1 Boost', cardindex=0)
+  # Đặt âm lượng
+  mixer.setvolume(int(volume))
+  current_volume = mixer.getvolume()[0]
+############################################################
+
+def count_time():
+  global second, minute, hour
+  start_time = datetime.strptime(start_time_str, "%a, %d %b %Y %H:%M:%S %z")
+  # Tính thời gian đến hiện tại
+  elapsed_time = datetime.now(timezone.utc) - start_time
+  second = elapsed_time.seconds
+  hour, remainder = divmod(second, 3600)
+  minute, second = divmod(remainder, 60)
+
+def get_darkice_status_ping():
+  global start_time_str
+  # Đọc nội dung của tệp cấu hình
+  config.read(CONFIG_FILE)
+  # Lấy giá trị các trường thông tin
+  server_host = config['icecast2-0']['server']
+  server_port = config['icecast2-0']['port']
+  mount_point = config['icecast2-0']['mountPoint']
+  
+  # Gửi yêu cầu HTTP GET đến Icecast để lấy trạng thái
+  icecast_status_url = 'http://'+server_host+':'+server_port+'/status-json.xsl'
+  try:
+    response = requests.get(icecast_status_url)
+    # Kiểm tra xem phản hồi có chứa thông tin của DarkIce không
+    if response.status_code == 200:  # 200 là mã phản hồi HTTP thành công
+      icecast_status = response.json()
+      if icecast_status['icestats'].get('source') is not None:
+        if isinstance(icecast_status['icestats']['source'], dict):
+        # Xử lý khi có 1 source đang stream
+          source = icecast_status['icestats']['source']
+          if source['server_name'] == mount_point:
+            # if start_time_str == '':
+            start_time_str = source['stream_start']
+            return True
+          else:
+            return False
+        elif isinstance(icecast_status['icestats']['source'], list):
+        # Xử lý khi có 2 source trở lên đang stream
+          for source in icecast_status['icestats']['source']:
+            if source['server_name'] == mount_point:
+              # if start_time_str == '':
+              start_time_str = source['stream_start']
+              return True
+            else:
+              return False
+        else:
+        # Xử lý khi không có source nào đang stream
+          return False
+      else:
+        return False
+    else:
+      return False
+  except requests.exceptions.RequestException:
+    return False
+    
+
+def get_darkice_status():
+    cmd = 'pgrep darkice'
+    try:
+        result = subprocess.check_output(cmd, shell=True)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+def start_darkice():   
+    global trangthaiplay, led_status,playStream
+    # start darkice stream
+    subprocess.Popen(['darkice'])
+    show_connecting()
+    time.sleep(1)
+    if get_darkice_status_ping():
+      playStream = 1
+      showStream.start()
+      time.sleep(0.5) 
+      countTime.start()
+      client.publish(trangthaiplay,"play")
+      gpio.output(led_status,True)
+
+def stop_darkice():
+    global last_start, playStream, trangthaiplay, led_status, second, minute, hour, start_time_str
+    # stop darkice stream
+    playStream = 0
+    client.publish(trangthaiplay,"stop")
+    gpio.output(led_status,False)
+    showStream.stop()
+    countTime.stop()
+    last_start = False
+    time.sleep(0.5) 
+    show_ready()
+    start_time_str = ''
+    second = 0
+    minute = 0
+    hour = 0
+    for proc in subprocess.Popen(['pgrep', '-f', 'darkice'], stdout=subprocess.PIPE).stdout:
+        pid = int(proc.decode())
+        os.kill(pid, signal.SIGTERM)
+
+############# ham call api xac nhan ket noi #################
+def api_xacnhanketnoi(data):
+  global trangthaiguiApi, userName, password, domainLoginTinh, domainPingTinh, domainLogTinh, imel, tenthietbi, madiaban, tendiaban, lat, lng, Status, Video, khoaguidulieu
+  try:
+    responsePingtest = requests.post(domainXacnhanketnoi, json = data)
+    jsonResponse = responsePingtest.json()
+    if(jsonResponse['success'] == True):
+      # dieu khien volume #
+      setVolume(jsonResponse['data']['data']['volume'])
+       # Đọc nội dung của tệp cấu hình
+      config.read(CONFIG_FILE)
+      # Thay đổi giá trị input
+      config.set("input", "device", jsonResponse['data']['data']['deviceinput'])
+      config.set("input", "channel", jsonResponse['data']['data']['channel'])
+      config.set("icecast2-0", "bitrate", jsonResponse['data']['data']['bitrate'])
+      config.set("icecast2-0", "server", jsonResponse['data']['data']['serverstream'])
+      config.set("icecast2-0", "port", jsonResponse['data']['data']['portstream'])
+      config.set("icecast2-0", "password", jsonResponse['data']['data']['password'])
+      config.set("icecast2-0", "name", jsonResponse['data']['data']['nameStream'])
+      config.set("icecast2-0", "mountPoint", jsonResponse['data']['data']['mountPoint'])
+      # Ghi lại nội dung vào tệp cấu hình
+      with open(CONFIG_FILE, "w") as configfile:
+        config.write(configfile)
+      # dieu khien play #
+      if(jsonResponse['data']['data']['statusPlay'] == 'play'):   
+        if(jsonResponse['data']['data']['deviceId'] == id):  
+         for proc in subprocess.Popen(['pgrep', '-f', 'darkice'], stdout=subprocess.PIPE).stdout:
+            pid = int(proc.decode())
+            os.kill(pid, signal.SIGTERM)   
+         start_darkice() 
+      else:
+        stop_darkice()
+  except:
+    print('loi xac nhan ket noi')
 
 ############### Blinl led connect ###########################
 def ledConnectNhapnhay():
@@ -339,6 +502,14 @@ def api_TrangThaiMatDien(value, ThoiGian):
     except Exception as e:    
        pass
 
+######### get dia chi ip ###################
+def get_ip_address():
+ ip_address = ''
+ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+ s.connect(("8.8.8.8",80))
+ ip_address = s.getsockname()[0]
+ s.close()
+ return ip_address
 
 def on_message(client, userdata, msg):
     print(f"📩 Nhận từ topic {msg.topic}: {msg.payload.decode()}")
@@ -364,7 +535,15 @@ def on_connect(client, userdata, flags, rc):
         gpio.output(led_connect,True)
         show_ready()
         time.sleep(3)
-        show_logo()     
+        show_logo()
+        """ call API xac nhan ket noi """
+       # ip = requests.get('https://api.ipify.org').text
+        dataXacnhanketnoi = {
+          'xacnhanketnoi': xacnhanketnoi,
+          'ip': get_ip_address(),
+          'phienban': phienban,   
+        }
+        api_xacnhanketnoi(dataXacnhanketnoi)        
     else:
         print("Bad connection Returned code=",rc)
         client.bad_connection_flag=True
@@ -387,6 +566,12 @@ watchdog_start = RepeatedTimer(1, watchdogStart)
 client.on_connect=on_connect        #attach function to callback
 client.will_set("device/offline", payload=id, qos=1, retain=False)
 client.on_message = on_message
+countTime = RepeatedTimer(1, count_time)
+showStream = RepeatedTimer(1, show_stream)
+countVolume = RepeatedTimer(1, count_time_show_volume)
+countVolume.stop()
+showStream.stop()
+countTime.stop()
 
 
 
