@@ -434,7 +434,7 @@ def api_xacnhanketnoi(data):
       print(jsonResponse)
 
       # dieu khien volume #
-      setVolume(get('data', {}).get('data', {}).get('volume'))
+      setVolume(jsonResponse.get('data', {}).get('data', {}).get('volume'))
        # Đọc nội dung của tệp cấu hình
       config.read(CONFIG_FILE)
       # Thay đổi giá trị input
