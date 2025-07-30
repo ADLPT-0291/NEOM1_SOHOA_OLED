@@ -436,7 +436,7 @@ def api_xacnhanketnoi(data):
       # dieu khien volume #
       setVolume(jsonResponse['data']['data']['volume'])
        # Đọc nội dung của tệp cấu hình
-      config.read(CONFIG_FILE)
+      # config.read(CONFIG_FILE)
       # Thay đổi giá trị input
       # config.set("input", "device", jsonResponse['data']['data']['deviceinput'])
       # config.set("input", "channel", jsonResponse['data']['data']['channel'])
