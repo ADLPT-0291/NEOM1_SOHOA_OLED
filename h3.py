@@ -428,6 +428,7 @@ def api_xacnhanketnoi(data):
   global trangthaiguiApi, userName, password, domainLoginTinh, domainPingTinh, domainLogTinh, imel, tenthietbi, madiaban, tendiaban, lat, lng, Status, Video, khoaguidulieu
   try:
     responsePingtest = requests.post(domainXacnhanketnoi, json = data)
+    print("📥 Phản hồi server:", responsePingtest.status_code)
     jsonResponse = responsePingtest.json()
     if(jsonResponse['success'] == True):
       # dieu khien volume #
@@ -455,6 +456,16 @@ def api_xacnhanketnoi(data):
          start_darkice() 
       else:
         stop_darkice()
+    else:
+      print("⚠️ Server trả về phản hồi không thành công:", jsonResponse)
+  except requests.exceptions.Timeout:
+    print("⏱️ Server không phản hồi kịp thời! Kiểm tra mạng hoặc thử lại sau.")
+  except requests.exceptions.ConnectionError:
+    print("🌐 Không thể kết nối tới server. Có thể server đang offline hoặc tên miền sai.")
+  except requests.exceptions.HTTPError as errh:
+    print("🚫 Lỗi HTTP:", errh)
+  except requests.exceptions.RequestException as e:
+    print("⚠️ Lỗi khi thực hiện yêu cầu:", e)
   except:
     print('loi xac nhan ket noi')
 
