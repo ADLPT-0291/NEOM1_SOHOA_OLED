@@ -432,11 +432,18 @@ def api_xacnhanketnoi(data):
     jsonResponse = responsePingtest.json()
     if(jsonResponse['success'] == True):
       print(jsonResponse)
+      volume_str = jsonResponse.get('data', {}).get('data', {}).get('volume')
+      if volume_str is None:
+        raise KeyError("Không tìm thấy volume trong phản hồi.")
+      volume = int(volume_str)
+      print("🔊 Volume:", volume)
+      setVolume(volume)
+
 
       # dieu khien volume #
       setVolume(jsonResponse.get('data', {}).get('data', {}).get('volume'))
        # Đọc nội dung của tệp cấu hình
-      config.read(CONFIG_FILE)
+      # config.read(CONFIG_FILE)
       # Thay đổi giá trị input
       # config.set("input", "device", jsonResponse['data']['data']['deviceinput'])
       # config.set("input", "channel", jsonResponse['data']['data']['channel'])
@@ -461,15 +468,16 @@ def api_xacnhanketnoi(data):
     else:
       print("⚠️ Server trả về phản hồi không thành công:", jsonResponse)
   except requests.exceptions.Timeout:
-    print("⏱️ Server không phản hồi kịp thời! Kiểm tra mạng hoặc thử lại sau.")
+      print("⏱️ Server không phản hồi kịp thời! Kiểm tra mạng hoặc thử lại sau.")
   except requests.exceptions.ConnectionError:
-    print("🌐 Không thể kết nối tới server. Có thể server đang offline hoặc tên miền sai.")
+      print("🌐 Không thể kết nối tới server. Có thể tên miền sai hoặc server đang offline.")
   except requests.exceptions.HTTPError as errh:
-    print("🚫 Lỗi HTTP:", errh)
+      print("🚫 Lỗi HTTP:", errh)
   except requests.exceptions.RequestException as e:
-    print("⚠️ Lỗi khi thực hiện yêu cầu:", e)
-  except:
-    print('loi xac nhan ket noi')
+      print("⚠️ Lỗi khi thực hiện yêu cầu:", e)
+  except Exception as err:
+      print("❌ Lỗi không xác định khi xác nhận kết nối:", err)
+
 
 ############### Blinl led connect ###########################
 def ledConnectNhapnhay():
